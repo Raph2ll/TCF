@@ -1,5 +1,6 @@
 using api.Models;
 using api.Mappings;
+using api.Mappings.Interfaces;
 
 using MySql.Data.MySqlClient;
 
@@ -33,7 +34,7 @@ namespace api.Data
                     cmd.CommandText = $"CREATE DATABASE IF NOT EXISTS {databaseName}";
                     cmd.ExecuteNonQuery();
                 }
-                
+
                 foreach (var entityMap in _entityMaps)
                 {
                     entityMap.Configure(connection);

@@ -1,6 +1,6 @@
 using api.Models;
-using api.Mappings;
-using api.Mappings.Interfaces;
+using api.Data.Mappings;
+using api.Data.Mappings.Interfaces;
 
 using MySql.Data.MySqlClient;
 

@@ -22,7 +22,7 @@ namespace api.Data.Mappings
                         surname VARCHAR(80) NOT NULL,
                         email VARCHAR(80) NOT NULL,
                         birthdate DATE NOT NULL,
-                        created_at DATETIME NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
                     );";
                 cmd.ExecuteNonQuery();

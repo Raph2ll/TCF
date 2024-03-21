@@ -1,5 +1,5 @@
 using System;
-using api.Mappings.Interfaces;
+using api.Data.Mappings.Interfaces;
 using MySql.Data.MySqlClient;
 using DotEnv;
 

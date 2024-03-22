@@ -7,12 +7,12 @@ namespace api.Data.Mappings
 {
     public class ClientMap : IEntityMap
     {
-        string databaseName = Environment.GetEnvironmentVariable("DATABASE_NAME");
+        private string DatabaseName = Environment.GetEnvironmentVariable("DATABASE_NAME");
         public void Configure(MySqlConnection connection)
         {
             using (var cmd = connection.CreateCommand())
             {
-                cmd.CommandText = $"USE {databaseName}";
+                cmd.CommandText = $"USE {DatabaseName}";
                 cmd.ExecuteNonQuery();
 
                 cmd.CommandText = @"

@@ -4,6 +4,7 @@ using api.Models;
 using api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using api.DTos;
 using Microsoft.AspNetCore.Http;
 
 namespace api.Controllers
@@ -22,7 +23,7 @@ namespace api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult CreateClient(Client client)
+        public IActionResult CreateClient(ClientCreateDTO client)
         {
             try
             {

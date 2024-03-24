@@ -2,20 +2,29 @@ using System;
 using api.Models;
 using api.Data.Repositories.Interfaces;
 using api.Services.Interfaces;
+using api.DTos;
+using api.Models;
 
 namespace api.Services
 {
     public class ClientService(IClientRepository clientRepository) : IClientService
     {
         private readonly IClientRepository _clientRepository = clientRepository;
-
-        public void CreateClient(Client client)
+        
+        public void CreateClient(ClientCreateDTO createClientDto)
         {
-            client.Id = Guid.NewGuid().ToString();
-
+            var client = new Client()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = createClientDto.Name,
+                Surname = createClientDto.Surname,
+                Email = createClientDto.Email,
+                BirthDate = createClientDto.BirthDate
+            };
+            
             _clientRepository.CreateClient(client);
         }
-
+        
         public List<Client> GetClients()
         {
             return _clientRepository.GetClients();

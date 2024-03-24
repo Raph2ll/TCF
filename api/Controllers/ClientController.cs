@@ -24,9 +24,15 @@ namespace api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult CreateClient(Client client)
         {
-            
+            try
+            {
                 _clientService.CreateClient(client);
                 return StatusCode(201, client);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
           
         }
 

@@ -1,13 +1,13 @@
 using System;
 using api.Data.Mappings.Interfaces;
 using MySql.Data.MySqlClient;
-using DotEnv;
-
+ 
 namespace api.Data.Mappings
 {
     public class ClientMap : IEntityMap
     {
-        private string DatabaseName = Environment.GetEnvironmentVariable("DATABASE_NAME");
+        private string DatabaseName = "plataforma";
+
         public void Configure(MySqlConnection connection)
         {
             using (var cmd = connection.CreateCommand())

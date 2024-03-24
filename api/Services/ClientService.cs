@@ -5,17 +5,14 @@ using api.Services.Interfaces;
 
 namespace api.Services
 {
-    public class ClientService : IClientService
+    public class ClientService(IClientRepository clientRepository) : IClientService
     {
-        private readonly IClientrepository _clientRepository;
-
-        public ClientService(IClientrepository clientRepository)
-        {
-            _clientRepository = clientRepository;
-        }
+        private readonly IClientRepository _clientRepository = clientRepository;
 
         public void CreateClient(Client client)
         {
+            client.Id = Guid.NewGuid().ToString();
+
             _clientRepository.CreateClient(client);
         }
 

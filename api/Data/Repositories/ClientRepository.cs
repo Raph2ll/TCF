@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 
 namespace api.Data.Repositories
 {
-    public class ClientRepository : IClientrepository
+    public class ClientRepository : IClientRepository
     {
         private readonly DataContext _connection;
         private string TableName = "client";

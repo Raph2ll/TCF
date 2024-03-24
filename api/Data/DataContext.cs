@@ -1,6 +1,7 @@
 using api.Models;
 using api.Data.Mappings;
 using api.Data.Mappings.Interfaces;
+using DotEnv;
 
 using MySql.Data.MySqlClient;
 
@@ -10,7 +11,7 @@ namespace api.Data
     {
         private readonly string _connectionString;
         private readonly IEnumerable<IEntityMap> _entityMaps;
-        string databaseName = Environment.GetEnvironmentVariable("DATABASE_NAME");
+        private string DatabaseName = "plataforma";
 
         public DataContext(string connectionString, IEnumerable<IEntityMap> entityMaps)
         {
@@ -31,7 +32,7 @@ namespace api.Data
 
                 using (var cmd = connection.CreateCommand())
                 {
-                    cmd.CommandText = $"CREATE DATABASE IF NOT EXISTS {databaseName}";
+                    cmd.CommandText = $"CREATE DATABASE IF NOT EXISTS {DatabaseName}";
                     cmd.ExecuteNonQuery();
                 }
 

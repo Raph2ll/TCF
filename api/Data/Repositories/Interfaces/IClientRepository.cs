@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Data.Repositories.Interfaces
 {
-    public interface IClientrepository
+    public interface IClientRepository
     {
         public void CreateClient(Client client);
         public List<Client> GetClients();

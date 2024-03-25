@@ -23,7 +23,8 @@ namespace api.Data.Mappings
                         email VARCHAR(80) NOT NULL,
                         birthdate DATE NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        deleted BOOL DEFAULT FALSE
                     );";
                 cmd.ExecuteNonQuery();
             }

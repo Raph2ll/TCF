@@ -43,8 +43,8 @@ namespace api.Data.Repositories
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName}",
-                    dbConnection))
+                using (var command = new MySqlCommand($@"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE deleted = false",
+                           dbConnection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
@@ -68,15 +68,16 @@ namespace api.Data.Repositories
             }
 
             return clients;
-
         }
+    
+
 
         public Client GetClientById(string id)
         {
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE id = @Id",
+                using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE id = @Id, deleted = false",
                     dbConnection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
@@ -109,7 +110,7 @@ namespace api.Data.Repositories
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var cmd = new MySqlCommand($"UPDATE {TableName} SET name = @Name, surname = @Surname, email = @Email, birthdate = @BirthDate WHERE id = @Id",
+                using (var cmd = new MySqlCommand($"UPDATE {TableName} SET name = @Name, surname = @Surname, email = @Email, birthdate = @BirthDate WHERE id = @Id, deleted = false",
                     dbConnection))
                 {
                     cmd.Parameters.AddWithValue("@Id", updatedClient.Id);
@@ -128,7 +129,7 @@ namespace api.Data.Repositories
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var command = new MySqlCommand($"DELETE FROM {TableName} WHERE id = @Id",
+                using (var command = new MySqlCommand($"UPDATE {TableName} SET deleted = true WHERE id = @Id, deleted = false",
                     dbConnection))
                 {
                     command.Parameters.AddWithValue("@Id", id);

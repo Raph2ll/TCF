@@ -9,7 +9,7 @@ namespace api.Services.Interfaces
         public void CreateClient(ClientCreateDTO clientCreateDto);
         public List<Client> GetClients();
         public Client GetClientById(string id);
-        public void UpdateClient(Client updatedClient);
+        public void UpdateClient(string id, ClientUpdateDTO updatedClient);
         public void DeleteClient(string id);
         
     }

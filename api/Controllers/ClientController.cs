@@ -52,5 +52,20 @@ namespace api.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult UpdateClient(string id, ClientUpdateDTO updatedClient)
+        {
+            
+                if (_clientService.GetClientById(id) == null)
+                {
+                    return NotFound("Client Not Found");
+                }
+                _clientService.UpdateClient(id, updatedClient);
+
+                return Ok(updatedClient);
+            
+        }
     }
 }

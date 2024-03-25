@@ -35,9 +35,18 @@ namespace api.Services
             return _clientRepository.GetClientById(id);
         }
 
-        public void UpdateClient(Client updatedClient)
+        public void UpdateClient(string id,ClientUpdateDTO updatedClient)
         {
-            _clientRepository.UpdateClient(updatedClient);
+            var client = new Client()
+            {
+                Id = id,
+                Name = updatedClient.Name,
+                Surname = updatedClient.Surname,
+                Email = updatedClient.Email,
+                BirthDate = updatedClient.BirthDate
+            };
+            
+            _clientRepository.UpdateClient(client);
         }
 
         public void DeleteClient(string id)

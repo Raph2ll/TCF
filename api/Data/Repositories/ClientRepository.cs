@@ -58,7 +58,7 @@ namespace api.Data.Repositories
                                 Email = reader["email"].ToString(),
                                 BirthDate = Convert.ToDateTime(reader["birthdate"]),
                                 CreatedAt = Convert.ToDateTime(reader["created_at"]),
-                                UpdatedAt = Convert.ToDateTime(reader["updated_at"]),
+                                UpdatedAt = Convert.ToDateTime(reader["updated_at"])
                             };
 
                             clients.Add(client);
@@ -76,12 +76,11 @@ namespace api.Data.Repositories
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var command = new MySqlCommand($"SELECT name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE id = @Id",
+                using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM plataforma.{TableName} WHERE id = @Id",
                     dbConnection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
-
-
+                    
                     using (var reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -110,14 +109,14 @@ namespace api.Data.Repositories
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var cmd = new MySqlCommand($"UPDATE {TableName} SET name = @Name, surname = @Surname, email = @Email, birthdate = @BirthDate WHERE Id = @Id",
+                using (var cmd = new MySqlCommand($"UPDATE {TableName} SET name = @Name, surname = @Surname, email = @Email, birthdate = @BirthDate WHERE id = @Id",
                     dbConnection))
                 {
                     cmd.Parameters.AddWithValue("@Id", updatedClient.Id);
                     cmd.Parameters.AddWithValue("@Name", updatedClient.Name);
                     cmd.Parameters.AddWithValue("@Surname", updatedClient.Surname);
                     cmd.Parameters.AddWithValue("@Email", updatedClient.Email);
-                    cmd.Parameters.AddWithValue("@BithDate", updatedClient.BirthDate);
+                    cmd.Parameters.AddWithValue("@BirthDate", updatedClient.BirthDate);
 
                     cmd.ExecuteNonQuery();
                 }

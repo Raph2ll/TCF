@@ -76,7 +76,7 @@ namespace api.Data.Repositories
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM plataforma.{TableName} WHERE id = @Id",
+                using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE id = @Id",
                     dbConnection))
                 {
                     command.Parameters.AddWithValue("@Id", id);

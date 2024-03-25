@@ -52,8 +52,10 @@ namespace api.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult UpdateClient(string id, ClientUpdateDTO updatedClient)
         {
@@ -66,6 +68,28 @@ namespace api.Controllers
                 _clientService.UpdateClient(id, updatedClient);
 
                 return Ok(updatedClient);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult DeleteClient(string id)
+        {
+            try
+            {
+                if (_clientService.GetClientById(id) == null)
+                {
+                    return NotFound("Client Not Found");
+                }
+                _clientService.DeleteClient(id);
+
+                return Ok("The client has been deleted");
             }
             catch (Exception ex)
             {

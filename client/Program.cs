@@ -40,7 +40,7 @@ namespace api
         
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TCF", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "client", Version = "v1" });
             });
             
             builder.Services.AddControllers();
@@ -52,11 +52,11 @@ namespace api
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TCF");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "client");
                 });
             }
 
-            app.UseRouting(); // Adiciona o middleware de roteamento
+            app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {

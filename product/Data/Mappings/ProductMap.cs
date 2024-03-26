@@ -19,8 +19,8 @@ namespace api.Data.Mappings
                     CREATE TABLE IF NOT EXISTS product (
                         id VARCHAR(40) PRIMARY KEY,
                         name VARCHAR(80) NOT NULL,
-                        dest VARCHAR(80) NOT NULL,
-                        quantity VARCHAR(80) NOT NULL,
+                        dest VARCHAR(250) NOT NULL,
+                        quantity INT NOT NULL,
                         Price DECIMAL(10, 2),
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -14,5 +14,7 @@ namespace api.Models
         public DateTime BirthDate { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public bool Deleted { get; set; }
+
     }
 }

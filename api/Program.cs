@@ -60,7 +60,7 @@ namespace api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers(); // Adiciona o middleware de endpoints
+                endpoints.MapControllers(); 
             });
 
             app.Run();

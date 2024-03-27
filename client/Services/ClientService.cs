@@ -7,9 +7,14 @@ using api.Models;
 
 namespace api.Services
 {
-    public class ClientService(IClientRepository clientRepository) : IClientService
+    public class ClientService : IClientService
     {
-        private readonly IClientRepository _clientRepository = clientRepository;
+        private readonly IClientRepository _clientRepository;
+
+        public ClientService(IClientRepository clientRepository)
+        {
+            _clientRepository = clientRepository;
+        }
         
         public void CreateClient(ClientCreateDTO createClientDto)
         {

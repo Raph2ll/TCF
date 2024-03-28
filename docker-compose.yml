@@ -8,10 +8,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: user123
       MYSQL_USER: user
-#  api:
-#    image: api
-#    build: .
-#    ports: 
-#      - "8080:8080"
-#    depends_on: 
-#      - db
+  api:
+    build: ./client  
+    ports: 
+      - "8080:8080"
+    depends_on: 
+      - db

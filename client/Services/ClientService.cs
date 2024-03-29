@@ -3,7 +3,7 @@ using api.Models;
 using api.Data.Repositories.Interfaces;
 using api.Services.Interfaces;
 using api.DTos;
-using api.Models;
+using client.Exceptions;
 
 namespace api.Services
 {
@@ -15,7 +15,7 @@ namespace api.Services
         {
             _clientRepository = clientRepository;
         }
-        
+
         public void CreateClient(ClientCreateDTO createClientDto)
         {
             var client = new Client()
@@ -26,10 +26,10 @@ namespace api.Services
                 Email = createClientDto.Email,
                 BirthDate = createClientDto.BirthDate
             };
-            
+
             _clientRepository.CreateClient(client);
         }
-        
+
         public List<Client> GetClients()
         {
             return _clientRepository.GetClients();
@@ -40,22 +40,59 @@ namespace api.Services
             return _clientRepository.GetClientById(id);
         }
 
-        public void UpdateClient(string id,ClientUpdateDTO updatedClient)
+        public void UpdateClient(string id, ClientUpdateDTO updatedClientDto)
         {
-            var client = new Client()
+            var existingClient = GetClientById(id);
+
+            if (existingClient == null)
             {
-                Id = id,
-                Name = updatedClient.Name,
-                Surname = updatedClient.Surname,
-                Email = updatedClient.Email,
-                BirthDate = updatedClient.BirthDate
+                throw new NotFoundException("Client Not Found");
+            }
+
+            string updatedName = existingClient.Name;
+            if (updatedClientDto.Name != "")
+            {
+                updatedName = updatedClientDto.Name;
+            }
+
+            string updatedSurname = existingClient.Surname;
+            if (updatedClientDto.Surname != "")
+            {
+                updatedSurname = updatedClientDto.Surname;
+            }
+
+            string updatedEmail = existingClient.Email;
+            if (updatedClientDto.Email != "")
+            {
+                updatedEmail = updatedClientDto.Email;
+            }
+
+            DateTime updatedBirthDate = existingClient.BirthDate;
+            if (updatedClientDto.BirthDate != default(DateTime))
+            {
+                updatedBirthDate = updatedClientDto.BirthDate;
+            }
+
+            var updatedClient = new Client
+            {
+                Id = existingClient.Id,
+                Name = updatedName,
+                Surname = updatedSurname,
+                Email = updatedEmail,
+                BirthDate = updatedBirthDate
             };
-            
-            _clientRepository.UpdateClient(client);
+
+            _clientRepository.UpdateClient(updatedClient);
         }
+
 
         public void DeleteClient(string id)
         {
+            if (GetClientById(id) == null)
+            {
+                throw new NotFoundException("Client Not Found");
+            }
+
             _clientRepository.DeleteClient(id);
         }
 

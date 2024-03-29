@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
 using api.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using api.DTos;
 using Microsoft.AspNetCore.Http;
+using client.Exceptions;
 
 namespace api.Controllers
 {
@@ -34,7 +34,7 @@ namespace api.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-          
+
         }
 
         [HttpGet]
@@ -52,7 +52,7 @@ namespace api.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
+
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -61,20 +61,20 @@ namespace api.Controllers
         {
             try
             {
-                if (_clientService.GetClientById(id) == null)
-                {
-                    return NotFound("Client Not Found");
-                }
                 _clientService.UpdateClient(id, updatedClient);
 
                 return Ok(updatedClient);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound($"Client not found: {ex.Message}");
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -83,13 +83,13 @@ namespace api.Controllers
         {
             try
             {
-                if (_clientService.GetClientById(id) == null)
-                {
-                    return NotFound("Client Not Found");
-                }
                 _clientService.DeleteClient(id);
 
                 return Ok("The client has been deleted");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound($"Client not found: {ex.Message}");
             }
             catch (Exception ex)
             {

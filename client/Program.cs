@@ -27,7 +27,7 @@ namespace api
                     new ClientMap()
                 };
 
-                var connection = new DataContext("Server=localhost;Port=3306;Uid=root;Pwd=user123", entityMaps);
+                var connection = new DataContext("Server=db;Port=3306;Uid=root;Pwd=user123", entityMaps);
                 connection.OnModelCreating();
 
                 return connection;

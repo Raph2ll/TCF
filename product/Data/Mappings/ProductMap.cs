@@ -1,8 +1,8 @@
 using System;
-using api.Data.Mappings.Interfaces;
+using product.Data.Mappings.Interfaces;
 using MySql.Data.MySqlClient;
  
-namespace api.Data.Mappings
+namespace product.Data.Mappings
 {
     public class ProductMap : IEntityMap
     {

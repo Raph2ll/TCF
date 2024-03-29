@@ -4,7 +4,7 @@ using DotEnv;
 
 using MySql.Data.MySqlClient;
 
-namespace api.Data
+namespace product.Data
 {
     public class DataContext
     {

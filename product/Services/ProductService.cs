@@ -82,4 +82,13 @@ public class ProductService
 
         _productRepository.UpdateProduct(updatedProduct);
     }
+    public void DeleteProduct(string id)
+    {
+        if (GetProductById(id) == null)
+        {
+            throw new NotFoundException("Client Not Found");
+        }
+
+        _productRepository.DeleteProduct(id);
+    }
 }

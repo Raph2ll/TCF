@@ -27,7 +27,7 @@ namespace product.Controllers
         {
             try
             {
-                _productService.
+                _productService.CreateProduct(Product);
                 return StatusCode(201, Product);
             }
             catch (Exception ex)

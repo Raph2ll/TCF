@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace client.Exceptions
+namespace product.Exceptions
 {
     public class NotFoundException : Exception
     {

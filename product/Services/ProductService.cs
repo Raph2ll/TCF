@@ -2,10 +2,11 @@ using product.Exceptions;
 using product.Data.Repositories.Interfaces;
 using product.Models;
 using product.Models.DTOs;
+using product.Services.Interfaces;
 
 namespace product.Services;
 
-public class ProductService 
+public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
 

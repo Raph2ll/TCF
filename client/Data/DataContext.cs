@@ -11,7 +11,7 @@ namespace client.Data
     {
         private readonly string _connectionString;
         private readonly IEnumerable<IEntityMap> _entityMaps;
-        private string DatabaseName = "plataforma";
+        private string DatabaseName = "client";
 
         public DataContext(string connectionString, IEnumerable<IEntityMap> entityMaps)
         {

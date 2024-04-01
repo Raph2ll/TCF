@@ -1,18 +1,18 @@
 using Microsoft.OpenApi.Models;
-using api.Data;
+using client.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using api.Data.Mappings.Interfaces;
-using api.Data.Mappings;
-using api.Data.Repositories.Interfaces;
-using api.Data.Repositories;
-using api.Services.Interfaces;
-using api.Services;
+using client.Data.Mappings.Interfaces;
+using client.Data.Mappings;
+using client.Data.Repositories.Interfaces;
+using client.Data.Repositories;
+using client.Services.Interfaces;
+using client.Services;
 using System.Collections.Generic;
 
-namespace api
+namespace client
 {
     public class Program
     {

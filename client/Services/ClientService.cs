@@ -1,11 +1,11 @@
 using System;
-using api.Models;
-using api.Data.Repositories.Interfaces;
-using api.Services.Interfaces;
-using api.Models.DTOs;
+using client.Models;
+using client.Data.Repositories.Interfaces;
+using client.Models.DTOs;
 using client.Exceptions;
+using client.Services.Interfaces;
 
-namespace api.Services
+namespace client.Services
 {
     public class ClientService : IClientService
     {

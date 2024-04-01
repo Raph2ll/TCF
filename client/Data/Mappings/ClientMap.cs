@@ -1,12 +1,12 @@
 using System;
-using api.Data.Mappings.Interfaces;
+using client.Data.Mappings.Interfaces;
 using MySql.Data.MySqlClient;
  
-namespace api.Data.Mappings
+namespace client.Data.Mappings
 {
     public class ClientMap : IEntityMap
     {
-        private string DatabaseName = "plataforma";
+        private string DatabaseName = "client";
 
         public void Configure(MySqlConnection connection)
         {

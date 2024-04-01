@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using api.Models;
-using api.Services.Interfaces;
+using client.Models;
+using client.Services.Interfaces;
 using System.Linq;
-using api.Models.DTOs;
+using client.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using client.Exceptions;
 

@@ -1,8 +1,8 @@
 using System;
-using api.Models;
-using api.Models.DTOs;
+using client.Models;
+using client.Models.DTOs;
 
-namespace api.Services.Interfaces
+namespace client.Services.Interfaces
 {
     public interface IClientService
     {

@@ -1,11 +1,11 @@
-using api.Models;
-using api.Data.Mappings;
-using api.Data.Mappings.Interfaces;
+using client.Models;
+using client.Data.Mappings;
+using client.Data.Mappings.Interfaces;
 using DotEnv;
 
 using MySql.Data.MySqlClient;
 
-namespace api.Data
+namespace client.Data
 {
     public class DataContext
     {

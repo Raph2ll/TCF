@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using api.Data.Repositories.Interfaces;
-using api.Models;
+using client.Data.Repositories.Interfaces;
+using client.Models;
 using MySql.Data.MySqlClient;
 
-namespace api.Data.Repositories
+namespace client.Data.Repositories
 {
     public class ClientRepository : IClientRepository
     {

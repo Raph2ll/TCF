@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 using System.Text.Json.Serialization;
 
-namespace api.Models.DTOs
+namespace client.Models.DTOs
 {
     public class ClientUpdateDTO
     {

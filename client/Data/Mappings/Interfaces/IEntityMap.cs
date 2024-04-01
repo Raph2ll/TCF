@@ -1,7 +1,7 @@
 using System;
 using MySql.Data.MySqlClient;
 
-namespace api.Data.Mappings.Interfaces
+namespace client.Data.Mappings.Interfaces
 {
     public interface IEntityMap
     {

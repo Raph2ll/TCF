@@ -1,7 +1,7 @@
 using System;
-using api.Models;
+using client.Models;
 
-namespace api.Data.Repositories.Interfaces
+namespace client.Data.Repositories.Interfaces
 {
     public interface IClientRepository
     {

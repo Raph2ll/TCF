@@ -1,6 +1,6 @@
 using System;
 using api.Models;
-using api.DTos;
+using api.Models.DTOs;
 
 namespace api.Services.Interfaces
 {

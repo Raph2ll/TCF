@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using api.Models;
 using api.Services.Interfaces;
 using System.Linq;
-using api.DTos;
+using api.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using client.Exceptions;
 

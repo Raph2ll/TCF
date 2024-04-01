@@ -2,7 +2,7 @@ using System;
 using api.Models;
 using api.Data.Repositories.Interfaces;
 using api.Services.Interfaces;
-using api.DTos;
+using api.Models.DTOs;
 using client.Exceptions;
 
 namespace api.Services

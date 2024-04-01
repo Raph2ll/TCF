@@ -1,7 +1,7 @@
 using System;
 using client.Data.Mappings.Interfaces;
 using MySql.Data.MySqlClient;
- 
+
 namespace client.Data.Mappings
 {
     public class ClientMap : IEntityMap
@@ -19,9 +19,9 @@ namespace client.Data.Mappings
                     CREATE TABLE IF NOT EXISTS client (
                         id VARCHAR(40) PRIMARY KEY,
                         name VARCHAR(80) NOT NULL,
-                        dest VARCHAR(80) NOT NULL,
-                        quantity VARCHAR(80) NOT NULL,
-                        Price DECIMAL(10, 2),
+                        surname VARCHAR(80) NOT NULL,
+                        email VARCHAR(80) NOT NULL,
+                        birthdate DATE NOT NULL,
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                         deleted BOOL DEFAULT FALSE

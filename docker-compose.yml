@@ -7,10 +7,15 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: user123
-      MYSQL_USER: user
-  api:
+  client:
     build: ./client  
     ports: 
       - "8080:8080"
+    depends_on: 
+      - db
+  product:
+    build: ./product  
+    ports: 
+      - "7070:7070"
     depends_on: 
       - db

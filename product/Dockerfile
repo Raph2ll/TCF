@@ -7,10 +7,10 @@ EXPOSE 7071
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["product/product.csproj", "product/"]
+COPY ["product.csproj", "product/"]
 RUN dotnet restore "product/product.csproj"
+WORKDIR "/src/product/"
 COPY . .
-WORKDIR "/src/product"
 RUN dotnet build "product.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

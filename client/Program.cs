@@ -19,7 +19,13 @@ namespace client
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
+            var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+            string connectionString = configuration.GetConnectionString("DefaultConnection");
+
             builder.Services.AddSingleton<DataContext>(_ =>
             {
                 var entityMaps = new List<IEntityMap>
@@ -27,7 +33,7 @@ namespace client
                     new ClientMap()
                 };
 
-                var connection = new DataContext("Server=db;Port=3306;Uid=root;Pwd=user123", entityMaps);
+                var connection = new DataContext(connectionString, entityMaps);
                 connection.OnModelCreating();
 
                 return connection;

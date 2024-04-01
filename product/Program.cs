@@ -9,6 +9,7 @@ public class Program
 
         app.MapGet("/", () => "Hello World!");
 
-        app.Run();
+        var port = "7070";
+        app.Run($"http://0.0.0.0:{port}");
     }
 }

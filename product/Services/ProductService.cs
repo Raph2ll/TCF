@@ -4,92 +4,93 @@ using product.Models;
 using product.Models.DTOs;
 using product.Services.Interfaces;
 
-namespace product.Services;
-
-public class ProductService : IProductService
+namespace product.Services
 {
-    private readonly IProductRepository _productRepository;
-
-    ProductService(IProductRepository productRepository)
+    public class ProductService : IProductService
     {
-        _productRepository = productRepository;
-    }
+        private readonly IProductRepository _productRepository;
 
-    public void CreateProduct(ProductCreateDTO newProduct)
-    {
-        var product = new Product()
+        public ProductService(IProductRepository productRepository)
         {
-            Id = Guid.NewGuid().ToString(),
-            Name = newProduct.Name,
-            Description = newProduct.Description,
-            Quantity = newProduct.Quantity,
-            Price = newProduct.Price
-        };
-
-        _productRepository.CreateProduct(product);
-    }
-
-    public List<Product> GetProducts()
-    {
-        return _productRepository.GetProducts();
-    }
-
-    public Product GetProductById(string id)
-    {
-        return _productRepository.GetProductById(id);
-    }
-
-    public void UpdateProduct(string id, ProductUpdateDTO updatedProductDto)
-    {
-        var existingProduct = GetProductById(id);
-
-        if (existingProduct == null)
-        {
-            throw new NotFoundException("Product Not Found");
+            _productRepository = productRepository;
         }
 
-        string updatedName = existingProduct.Name;
-        if (!string.IsNullOrEmpty(updatedProductDto.Name))
+        public void CreateProduct(ProductCreateDTO newProduct)
         {
-            updatedName = updatedProductDto.Name;
+            var product = new Product()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = newProduct.Name,
+                Description = newProduct.Description,
+                Quantity = newProduct.Quantity,
+                Price = newProduct.Price
+            };
+
+            _productRepository.CreateProduct(product);
         }
 
-        string updatedDescription = existingProduct.Description;
-        if (!string.IsNullOrEmpty(updatedProductDto.Description))
+        public List<Product> GetProducts()
         {
-            updatedDescription = updatedProductDto.Description;
+            return _productRepository.GetProducts();
         }
 
-        int updatedQuantity = existingProduct.Quantity;
-        if (updatedProductDto.Quantity > 0)
+        public Product GetProductById(string id)
         {
-            updatedQuantity = updatedProductDto.Quantity;
+            return _productRepository.GetProductById(id);
         }
 
-        decimal updatedPrice = existingProduct.Price;
-        if (updatedProductDto.Price > 0)
+        public void UpdateProduct(string id, ProductUpdateDTO updatedProductDto)
         {
-            updatedPrice = updatedProductDto.Price;
+            var existingProduct = GetProductById(id);
+
+            if (existingProduct == null)
+            {
+                throw new NotFoundException("Product Not Found");
+            }
+
+            string updatedName = existingProduct.Name;
+            if (!string.IsNullOrEmpty(updatedProductDto.Name))
+            {
+                updatedName = updatedProductDto.Name;
+            }
+
+            string updatedDescription = existingProduct.Description;
+            if (!string.IsNullOrEmpty(updatedProductDto.Description))
+            {
+                updatedDescription = updatedProductDto.Description;
+            }
+
+            int updatedQuantity = existingProduct.Quantity;
+            if (updatedProductDto.Quantity > 0)
+            {
+                updatedQuantity = updatedProductDto.Quantity;
+            }
+
+            decimal updatedPrice = existingProduct.Price;
+            if (updatedProductDto.Price > 0)
+            {
+                updatedPrice = updatedProductDto.Price;
+            }
+
+            var updatedProduct = new Product
+            {
+                Id = existingProduct.Id,
+                Name = updatedName,
+                Description = updatedDescription,
+                Quantity = updatedQuantity,
+                Price = updatedPrice
+            };
+
+            _productRepository.UpdateProduct(updatedProduct);
         }
-
-        var updatedProduct = new Product
+        public void DeleteProduct(string id)
         {
-            Id = existingProduct.Id,
-            Name = updatedName,
-            Description = updatedDescription,
-            Quantity = updatedQuantity,
-            Price = updatedPrice
-        };
+            if (GetProductById(id) == null)
+            {
+                throw new NotFoundException("Client Not Found");
+            }
 
-        _productRepository.UpdateProduct(updatedProduct);
-    }
-    public void DeleteProduct(string id)
-    {
-        if (GetProductById(id) == null)
-        {
-            throw new NotFoundException("Client Not Found");
+            _productRepository.DeleteProduct(id);
         }
-
-        _productRepository.DeleteProduct(id);
     }
 }

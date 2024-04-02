@@ -1,4 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+
+ENV ASPNETCORE_ENVIRONMENT=Development
+
 USER $APP_UID
 WORKDIR /app
 EXPOSE 7070

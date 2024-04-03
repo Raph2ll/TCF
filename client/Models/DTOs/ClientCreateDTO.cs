@@ -15,10 +15,10 @@ namespace client.Models.DTOs
 
         public string? Surname { get; set; }
 
-        [EmailAddress]
+        [Required, EmailAddress]
         public string? Email { get; set; }
 
-        [Required, DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true), CustomerDateOfBirthValidation]
+        [Required, DataType(DataType.Date), CustomerDateOfBirthValidation]
         public DateTime BirthDate { get; set; }
     }
 }

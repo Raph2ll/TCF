@@ -6,6 +6,8 @@ using System.Linq;
 using client.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using client.Exceptions;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace api.Controllers
 {
@@ -20,8 +22,19 @@ namespace api.Controllers
             _clientService = clientService;
         }
 
+        /// <summary>
+        /// Create a client.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="client">Client's data</param>
+        /// <returns></returns>
+        /// <response code="201">Success in creating the client</response>
+        /// <response code="400">Malformed request</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ClientCreateDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult CreateClient(ClientCreateDTO client)
         {
@@ -30,6 +43,10 @@ namespace api.Controllers
                 _clientService.CreateClient(client);
                 return StatusCode(201, client);
             }
+            catch (ValidationException ex)
+            {
+                return StatusCode(400, ex);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
@@ -37,6 +54,15 @@ namespace api.Controllers
 
         }
 
+        /// <summary>
+        /// Get clients.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="client">Client's data</param>
+        /// <returns></returns>
+        /// <response code="201">Success in creating the client</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -53,6 +79,16 @@ namespace api.Controllers
             }
         }
 
+        /// <summary>
+        /// Edit client by id.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">Client id</param>
+        /// <returns></returns>
+        /// <response code="200">Return new client</response>
+        /// <response code="404">Client not found</response>
+        /// <response code="500">Internal server error</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,7 +103,7 @@ namespace api.Controllers
             }
             catch (NotFoundException ex)
             {
-                return NotFound($"Client not found: {ex.Message}");
+                return NotFound($"{ex.Message}");
             }
             catch (Exception ex)
             {
@@ -75,6 +111,16 @@ namespace api.Controllers
             }
         }
 
+        /// <summary>
+        /// Soft delete client by id.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">Client id</param>
+        /// <returns></returns>
+        /// <response code="200">The client has been deleted</response>
+        /// <response code="404">Client not found</response>
+        /// <response code="500">Internal server error</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

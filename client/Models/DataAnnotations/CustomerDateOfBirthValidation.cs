@@ -3,37 +3,31 @@ using System.ComponentModel.DataAnnotations;
 
 namespace client.Models.DataAnnotations
 {
+
     public class CustomerDateOfBirthValidation : ValidationAttribute
     {
         public const string MINIMUM_DATE_OF_BIRTH = "The customer is younger than 18 years old";
+        public const string MAXIMUM_DATE_OF_BIRTH = "The customer is older than 200 years old";
 
-        /// <summary>
-        /// Minimum age 
-        /// </summary>
-        private int minAge = 18;
-
-        /// <summary>
-        /// Whether the date of birth is valid.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (value == null || !(value is DateTime))
             {
-                return ValidationResult.Success;
+                return new ValidationResult("Invalid date of birth format.");
             }
 
             DateTime dob = (DateTime)value;
 
-            var minDateOfBirth = DateTime.Now.Date.AddYears(-minAge);
+            var currentDate = DateTime.Now.Date;
+            var oldestAllowedDateOfBirth = currentDate.AddYears(-200);
 
-            if (dob > minDateOfBirth)
+            if (dob > currentDate || dob < oldestAllowedDateOfBirth)
             {
-                return new ValidationResult(MINIMUM_DATE_OF_BIRTH);
+                return new ValidationResult("Date of birth is outside the allowed range.");
             }
 
             return ValidationResult.Success;
         }
+
     }
 }

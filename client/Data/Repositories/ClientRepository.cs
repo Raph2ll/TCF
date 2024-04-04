@@ -43,7 +43,7 @@ namespace client.Data.Repositories
             using (var dbConnection = _connection.GetConnection())
             {
                 dbConnection.Open();
-                using (var command = new MySqlCommand($@"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE deleted = false",
+                using (var command = new MySqlCommand($@"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE deleted = false ORDER BY created_at",
                            dbConnection))
                 {
                     using (var reader = command.ExecuteReader())

@@ -1,7 +1,6 @@
 using client.Models;
 using client.Data.Mappings;
 using client.Data.Mappings.Interfaces;
-using DotEnv;
 
 using MySql.Data.MySqlClient;
 

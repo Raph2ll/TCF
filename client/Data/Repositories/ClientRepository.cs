@@ -70,8 +70,6 @@ namespace client.Data.Repositories
             return clients;
         }
     
-
-
         public Client GetClientById(string id)
         {
             using (var dbConnection = _connection.GetConnection())

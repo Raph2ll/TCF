@@ -4,34 +4,58 @@ using client.Data.Repositories.Interfaces;
 using client.Models.DTOs;
 using client.Exceptions;
 using client.Services.Interfaces;
+using Serilog;
+using System;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace client.Services
 {
     public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
+        private readonly Serilog.ILogger _logger;
 
         public ClientService(IClientRepository clientRepository)
         {
             _clientRepository = clientRepository;
+            _logger = Serilog.Log.ForContext<ClientService>();
         }
 
         public void CreateClient(ClientCreateDTO createClientDto)
         {
-            var client = new Client()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = createClientDto.Name,
-                Surname = createClientDto.Surname,
-                Email = createClientDto.Email,
-                BirthDate = createClientDto.BirthDate
-            };
+            var stopwatch = Stopwatch.StartNew();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Information($"{} method started.");
 
-            _clientRepository.CreateClient(client);
+            try
+            {
+                var client = new Client()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = createClientDto.Name,
+                    Surname = createClientDto.Surname,
+                    Email = createClientDto.Email,
+                    BirthDate = createClientDto.BirthDate
+                };
+
+                _clientRepository.CreateClient(client);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error in CreateClient method.");
+                throw;
+            }
+            stopwatch.Stop();
+
+            double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
+
+            _logger.Information($"{methodName} method completed in {elapsedMilliseconds.ToString("0.####")}ms");
         }
 
         public List<Client> GetClients()
         {
+            
             return _clientRepository.GetClients();
         }
 

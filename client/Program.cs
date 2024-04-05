@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
+using Serilog;
 
 
 namespace client
@@ -59,14 +61,26 @@ namespace client
                         Url = new Uri("https://github.com/Raph2ll")
                     }
                 });
-                
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-
             });
 
             builder.Services.AddControllers();
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Console(outputTemplate:
+                "{Timestamp:yyyy-MM-ddTHH:mm:ssZ}  {Level:u}  {Message:lj} {NewLine}{Exception}")
+                .Enrich.FromLogContext()
+                .CreateLogger();
+
+            builder.Services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddSerilog(dispose: true);
+            });
+
+            builder.Host.UseSerilog();
 
             var app = builder.Build();
 
@@ -79,6 +93,7 @@ namespace client
                 });
             }
 
+            app.UseSerilogRequestLogging();
             app.UseRouting();
 
             app.MapControllers();

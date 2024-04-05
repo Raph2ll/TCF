@@ -26,7 +26,7 @@ namespace client.Services
         {
             var stopwatch = Stopwatch.StartNew();
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Information($"{} method started.");
+            _logger.Information($"{methodName} method started.");
 
             try
             {

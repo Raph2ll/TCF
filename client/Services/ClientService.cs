@@ -8,6 +8,7 @@ using Serilog;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using client.Utils;
 
 namespace client.Services
 {
@@ -15,11 +16,13 @@ namespace client.Services
     {
         private readonly IClientRepository _clientRepository;
         private readonly Serilog.ILogger _logger;
+        private readonly ContextFactory _ctxFactory;
 
         public ClientService(IClientRepository clientRepository)
         {
             _clientRepository = clientRepository;
             _logger = Serilog.Log.ForContext<ClientService>();
+            _ctxFactory = new ContextFactory(_logger);
         }
 
         public void CreateClient(ClientCreateDTO createClientDto)
@@ -55,70 +58,87 @@ namespace client.Services
 
         public List<Client> GetClients()
         {
-            
-            return _clientRepository.GetClients();
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            using (var ctx = _ctxFactory.Create(methodName))
+            {
+                return _clientRepository.GetClients();
+            }
         }
 
         public Client GetClientById(string id)
         {
-            return _clientRepository.GetClientById(id);
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            using (var ctx = _ctxFactory.Create(methodName))
+            {
+                return _clientRepository.GetClientById(id);
+            }
         }
 
         public void UpdateClient(string id, ClientUpdateDTO updatedClientDto)
         {
-            var existingClient = GetClientById(id);
+            string methodName = MethodBase.GetCurrentMethod().Name;
 
-            if (existingClient == null)
+            using (var ctx = _ctxFactory.Create(methodName))
             {
-                throw new NotFoundException("Client Not Found");
+                var existingClient = GetClientById(id);
+
+                if (existingClient == null)
+                {
+                    throw new NotFoundException("Client Not Found");
+                }
+
+                string updatedName = existingClient.Name;
+                if (updatedClientDto.Name != "")
+                {
+                    updatedName = updatedClientDto.Name;
+                }
+
+                string updatedSurname = existingClient.Surname;
+                if (updatedClientDto.Surname != "")
+                {
+                    updatedSurname = updatedClientDto.Surname;
+                }
+
+                string updatedEmail = existingClient.Email;
+                if (updatedClientDto.Email != "")
+                {
+                    updatedEmail = updatedClientDto.Email;
+                }
+
+                DateTime updatedBirthDate = existingClient.BirthDate;
+                if (updatedClientDto.BirthDate != default(DateTime))
+                {
+                    updatedBirthDate = updatedClientDto.BirthDate;
+                }
+
+                var updatedClient = new Client
+                {
+                    Id = existingClient.Id,
+                    Name = updatedName,
+                    Surname = updatedSurname,
+                    Email = updatedEmail,
+                    BirthDate = updatedBirthDate
+                };
+
+                _clientRepository.UpdateClient(updatedClient);
             }
-
-            string updatedName = existingClient.Name;
-            if (updatedClientDto.Name != "")
-            {
-                updatedName = updatedClientDto.Name;
-            }
-
-            string updatedSurname = existingClient.Surname;
-            if (updatedClientDto.Surname != "")
-            {
-                updatedSurname = updatedClientDto.Surname;
-            }
-
-            string updatedEmail = existingClient.Email;
-            if (updatedClientDto.Email != "")
-            {
-                updatedEmail = updatedClientDto.Email;
-            }
-
-            DateTime updatedBirthDate = existingClient.BirthDate;
-            if (updatedClientDto.BirthDate != default(DateTime))
-            {
-                updatedBirthDate = updatedClientDto.BirthDate;
-            }
-
-            var updatedClient = new Client
-            {
-                Id = existingClient.Id,
-                Name = updatedName,
-                Surname = updatedSurname,
-                Email = updatedEmail,
-                BirthDate = updatedBirthDate
-            };
-
-            _clientRepository.UpdateClient(updatedClient);
         }
-
 
         public void DeleteClient(string id)
         {
-            if (GetClientById(id) == null)
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            using (var ctx = _ctxFactory.Create(methodName))
             {
-                throw new NotFoundException("Client Not Found");
+                if (GetClientById(id) == null)
+                {
+                    throw new NotFoundException("Client Not Found");
+                }
+
+                _clientRepository.DeleteClient(id);
             }
-
-            _clientRepository.DeleteClient(id);
         }
-
     }
 }

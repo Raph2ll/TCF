@@ -38,7 +38,7 @@ namespace client.Utils
         public void Dispose()
         {
             _sw.Stop();
-            _logger?.Information($"{_name} took {(_sw.Elapsed.TotalMilliseconds).ToString("0.###")}ms");
+            _logger?.Information($"{_name} took {(_sw.Elapsed.TotalMilliseconds):0.###}ms");
         }
     }
     public class ContextFactory

@@ -10,10 +10,10 @@ namespace client.Utils
 {
     public class LoggerContext : IDisposable
     {
-        private string? _name;
-        private Stopwatch _sw = new Stopwatch();
+        private readonly string? _name;
+        private readonly Stopwatch _sw = new Stopwatch();
 
-        private Serilog.ILogger? _logger = null;
+        private readonly Serilog.ILogger? _logger = null;
         public LoggerContext(string name, Serilog.ILogger looger)
         {
             _sw.Start();
@@ -29,7 +29,7 @@ namespace client.Utils
             }
 
         }
-        public void OnError(string message)
+        private void OnError(string message)
         {
             _sw.Stop();
             _logger?.Error(message);
@@ -38,12 +38,12 @@ namespace client.Utils
         public void Dispose()
         {
             _sw.Stop();
-            _logger?.Information($"{_name} took {_sw.ElapsedMilliseconds}ms");
+            _logger?.Information($"{_name} took {(_sw.Elapsed.TotalMilliseconds).ToString("0.###")}ms");
         }
     }
     public class ContextFactory
     {
-        private Serilog.ILogger? _logger;
+        private readonly Serilog.ILogger? _logger;
 
         public ContextFactory(Serilog.ILogger? logger)
         {

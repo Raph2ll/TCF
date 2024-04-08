@@ -17,6 +17,7 @@ namespace client.Services
         private readonly IClientRepository _clientRepository;
         private readonly Serilog.ILogger _logger;
         private readonly ContextFactory _ctxFactory;
+        private readonly string _namespace = "Service";
 
         public ClientService(IClientRepository clientRepository)
         {
@@ -27,11 +28,9 @@ namespace client.Services
 
         public void CreateClient(ClientCreateDTO createClientDto)
         {
-            var stopwatch = Stopwatch.StartNew();
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Information($"{methodName} method started.");
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
-            try
+            using (var ctx = _ctxFactory.Create(methodName))
             {
                 var client = new Client()
                 {
@@ -44,21 +43,11 @@ namespace client.Services
 
                 _clientRepository.CreateClient(client);
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Error in CreateClient method.");
-                throw;
-            }
-            stopwatch.Stop();
-
-            double elapsedMilliseconds = stopwatch.Elapsed.TotalMilliseconds;
-
-            _logger.Information($"{methodName} method completed in {elapsedMilliseconds.ToString("0.####")}ms");
         }
 
         public List<Client> GetClients()
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
@@ -68,7 +57,7 @@ namespace client.Services
 
         public Client GetClientById(string id)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
@@ -78,7 +67,7 @@ namespace client.Services
 
         public void UpdateClient(string id, ClientUpdateDTO updatedClientDto)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
@@ -128,7 +117,7 @@ namespace client.Services
 
         public void DeleteClient(string id)
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
             using (var ctx = _ctxFactory.Create(methodName))
             {

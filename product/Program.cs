@@ -1,6 +1,4 @@
 using product.Data;
-using product.Data.Mappings.Interfaces;
-using product.Data.Mappings;
 using product.Data.Repositories.Interfaces;
 using product.Data.Repositories;
 using product.Services.Interfaces;
@@ -28,14 +26,7 @@ namespace product
 
             builder.Services.AddSingleton<DataContext>(_ =>
             {
-                var entityMaps = new List<IEntityMap>
-                {
-                    new ProductMap()
-                };
-
-                var connection = new DataContext(connectionString, entityMaps);
-                connection.OnModelCreating();
-
+                var connection = new DataContext(connectionString);
                 return connection;
             });
 

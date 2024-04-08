@@ -14,7 +14,7 @@ namespace client.Data.Repositories
     public class ClientRepository : IClientRepository
     {
         private readonly DataContext _connection;
-        private string TableName = "client";
+        private string TableName = "clients";
         private readonly Serilog.ILogger _logger;
         private readonly ContextFactory _ctxFactory;
         private readonly string _namespace = "Repository";

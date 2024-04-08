@@ -7,7 +7,7 @@ namespace product.Data.Repositories
     public class ProductRepository : IProductRepository
     {
         private readonly DataContext _connection;
-        private string _tableName = "product";
+        private string _tableName = "products";
         
         public ProductRepository(DataContext connection)
         {

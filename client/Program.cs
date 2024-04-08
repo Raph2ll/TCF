@@ -1,6 +1,4 @@
 using client.Data;
-using client.Data.Mappings.Interfaces;
-using client.Data.Mappings;
 using client.Data.Repositories.Interfaces;
 using client.Data.Repositories;
 using client.Services.Interfaces;
@@ -32,13 +30,7 @@ namespace client
 
             builder.Services.AddSingleton<DataContext>(_ =>
             {
-                var entityMaps = new List<IEntityMap>
-                {
-                    new ClientMap()
-                };
-
-                var connection = new DataContext(connectionString, entityMaps);
-                connection.OnModelCreating();
+                var connection = new DataContext(connectionString);
 
                 return connection;
             });
@@ -71,7 +63,7 @@ namespace client
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .WriteTo.Console(outputTemplate:
-                "{Timestamp:yyyy-MM-ddTHH:mm:ssZ}  {Level:u}  {Message:lj} {NewLine}{Exception}")
+                "{Timestamp:yyyy-MM-ddTHH:mm:ssZ} {Level:u}\t{Message:lj} {NewLine}{Exception}")
                 .Enrich.FromLogContext()
                 .CreateLogger();
 

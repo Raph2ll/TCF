@@ -1,6 +1,6 @@
 using System;
 using client.Models;
-using client.Data.Repositories.Interfaces;
+using client.Db.Repositories.Interfaces;
 using client.Models.DTOs;
 using client.Exceptions;
 using client.Services.Interfaces;

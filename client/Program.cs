@@ -1,6 +1,6 @@
-using client.Data;
-using client.Data.Repositories.Interfaces;
-using client.Data.Repositories;
+using client.Db;
+using client.Db.Repositories.Interfaces;
+using client.Db.Repositories;
 using client.Services.Interfaces;
 using client.Services;
 using Microsoft.OpenApi.Models;
@@ -28,11 +28,9 @@ namespace client
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddSingleton<DataContext>(_ =>
+            builder.Services.AddSingleton<DbContext>(_ =>
             {
-                var connection = new DataContext(connectionString);
-
-                return connection;
+                return new DbContext(connectionString, "client", Log.Logger);
             });
 
             builder.Services.AddSingleton<IClientRepository, ClientRepository>();

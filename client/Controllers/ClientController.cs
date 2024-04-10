@@ -59,7 +59,6 @@ namespace api.Controllers
         /// </summary>
         /// <remarks>
         /// </remarks>
-        /// <param name="client">Client's data</param>
         /// <returns></returns>
         /// <response code="201">Success in creating the client</response>
         /// <response code="500">Internal server error</response>

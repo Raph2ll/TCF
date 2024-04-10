@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using client.Data.Repositories.Interfaces;
+using client.Db.Repositories.Interfaces;
 using client.Models;
+using client.Db;
 using MySql.Data.MySqlClient;
 using Serilog;
 using client.Utils;
@@ -9,20 +10,20 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace client.Data.Repositories
+namespace client.Db.Repositories
 {
     public class ClientRepository : IClientRepository
     {
-        private readonly DataContext _connection;
+        private readonly DbContext _dbContext;
         private string TableName = "clients";
         private readonly Serilog.ILogger _logger;
         private readonly ContextFactory _ctxFactory;
         private readonly string _namespace = "Repository";
 
 
-        public ClientRepository(DataContext connection)
+        public ClientRepository(DbContext connection)
         {
-            _connection = connection;
+            _dbContext = connection;
             _logger = Serilog.Log.ForContext<ClientRepository>();
             _ctxFactory = new ContextFactory(_logger);
         }
@@ -33,24 +34,22 @@ namespace client.Data.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var dbConnection = _connection.GetConnection())
-                {
-                    dbConnection.Open();
-                    using (var cmd = new MySqlCommand(@$"INSERT INTO {TableName} (id, name, surname, email, birthdate) 
-                    VALUES (@Id, @Name, @Surname, @Email, @BirthDate)",
-                        dbConnection))
-                    {
-                        cmd.Parameters.AddWithValue("@Id", client.Id);
-                        cmd.Parameters.AddWithValue("@Name", client.Name);
-                        cmd.Parameters.AddWithValue("@Surname", client.Surname);
-                        cmd.Parameters.AddWithValue("@Email", client.Email);
-                        cmd.Parameters.AddWithValue("@BirthDate", client.BirthDate);
 
-                        cmd.ExecuteNonQuery();
-                    }
+                using (var cmd = new MySqlCommand(@$"INSERT INTO client.{TableName} (id, name, surname, email, birthdate) 
+                    VALUES (@Id, @Name, @Surname, @Email, @BirthDate)",
+                    _dbContext.Connection))
+                {
+                    cmd.Parameters.AddWithValue("@Id", client.Id);
+                    cmd.Parameters.AddWithValue("@Name", client.Name);
+                    cmd.Parameters.AddWithValue("@Surname", client.Surname);
+                    cmd.Parameters.AddWithValue("@Email", client.Email);
+                    cmd.Parameters.AddWithValue("@BirthDate", client.BirthDate);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
+
 
         public List<Client> GetClients()
         {
@@ -60,32 +59,28 @@ namespace client.Data.Repositories
             {
                 var clients = new List<Client>();
 
-                using (var dbConnection = _connection.GetConnection())
+                using (var command = new MySqlCommand($@"SELECT id, name, surname, email, birthdate, created_at, updated_at 
+                    FROM client.{TableName} WHERE deleted = false ORDER BY created_at",
+                    _dbContext.Connection))
                 {
-                    dbConnection.Open();
-                    using (var command = new MySqlCommand($@"SELECT id, name, surname, email, birthdate, created_at, updated_at 
-                    FROM {TableName} WHERE deleted = false ORDER BY created_at",
-                        dbConnection))
+                    using (var reader = command.ExecuteReader())
                     {
-                        using (var reader = command.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
+                            _logger.Information($"Starting iteration");
+                            var client = new Client
                             {
-                                _logger.Information($"Starting iteration");
-                                var client = new Client
-                                {
-                                    Id = reader["id"].ToString(),
-                                    Name = reader["name"].ToString(),
-                                    Surname = reader["surname"].ToString(),
-                                    Email = reader["email"].ToString(),
-                                    BirthDate = Convert.ToDateTime(reader["birthdate"]),
-                                    CreatedAt = Convert.ToDateTime(reader["created_at"]),
-                                    UpdatedAt = Convert.ToDateTime(reader["updated_at"])
-                                };
-                                _logger.Information($"{clients.Count()} Adding a client");
+                                Id = reader["id"].ToString(),
+                                Name = reader["name"].ToString(),
+                                Surname = reader["surname"].ToString(),
+                                Email = reader["email"].ToString(),
+                                BirthDate = Convert.ToDateTime(reader["birthdate"]),
+                                CreatedAt = Convert.ToDateTime(reader["created_at"]),
+                                UpdatedAt = Convert.ToDateTime(reader["updated_at"])
+                            };
+                            _logger.Information($"{clients.Count()} Adding a client");
 
-                                clients.Add(client);
-                            }
+                            clients.Add(client);
                         }
                     }
                 }
@@ -100,29 +95,25 @@ namespace client.Data.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var dbConnection = _connection.GetConnection())
+                using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM client.{TableName} WHERE id = @Id AND deleted = false",
+                    _dbContext.Connection))
                 {
-                    dbConnection.Open();
-                    using (var command = new MySqlCommand($"SELECT id, name, surname, email, birthdate, created_at, updated_at FROM {TableName} WHERE id = @Id AND deleted = false",
-                        dbConnection))
-                    {
-                        command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@Id", id);
 
-                        using (var reader = command.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
                         {
-                            if (reader.Read())
+                            return new Client
                             {
-                                return new Client
-                                {
-                                    Id = reader["id"].ToString(),
-                                    Name = reader["name"].ToString(),
-                                    Surname = reader["surname"].ToString(),
-                                    Email = reader["email"].ToString(),
-                                    BirthDate = Convert.ToDateTime(reader["birthdate"]),
-                                    CreatedAt = Convert.ToDateTime(reader["created_at"]),
-                                    UpdatedAt = Convert.ToDateTime(reader["updated_at"])
-                                };
-                            }
+                                Id = reader["id"].ToString(),
+                                Name = reader["name"].ToString(),
+                                Surname = reader["surname"].ToString(),
+                                Email = reader["email"].ToString(),
+                                BirthDate = Convert.ToDateTime(reader["birthdate"]),
+                                CreatedAt = Convert.ToDateTime(reader["created_at"]),
+                                UpdatedAt = Convert.ToDateTime(reader["updated_at"])
+                            };
                         }
                     }
                 }
@@ -137,20 +128,16 @@ namespace client.Data.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var dbConnection = _connection.GetConnection())
+                using (var cmd = new MySqlCommand($"UPDATE client.{TableName} SET name = @Name, surname = @Surname, email = @Email, birthdate = @BirthDate WHERE id = @Id AND deleted = false",
+                   _dbContext.Connection))
                 {
-                    dbConnection.Open();
-                    using (var cmd = new MySqlCommand($"UPDATE {TableName} SET name = @Name, surname = @Surname, email = @Email, birthdate = @BirthDate WHERE id = @Id AND deleted = false",
-                        dbConnection))
-                    {
-                        cmd.Parameters.AddWithValue("@Id", updatedClient.Id);
-                        cmd.Parameters.AddWithValue("@Name", updatedClient.Name);
-                        cmd.Parameters.AddWithValue("@Surname", updatedClient.Surname);
-                        cmd.Parameters.AddWithValue("@Email", updatedClient.Email);
-                        cmd.Parameters.AddWithValue("@BirthDate", updatedClient.BirthDate);
+                    cmd.Parameters.AddWithValue("@Id", updatedClient.Id);
+                    cmd.Parameters.AddWithValue("@Name", updatedClient.Name);
+                    cmd.Parameters.AddWithValue("@Surname", updatedClient.Surname);
+                    cmd.Parameters.AddWithValue("@Email", updatedClient.Email);
+                    cmd.Parameters.AddWithValue("@BirthDate", updatedClient.BirthDate);
 
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
@@ -161,15 +148,11 @@ namespace client.Data.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var dbConnection = _connection.GetConnection())
+                using (var command = new MySqlCommand($"UPDATE client.{TableName} SET deleted = true WHERE id = @Id, deleted = false",
+                    _dbContext.Connection))
                 {
-                    dbConnection.Open();
-                    using (var command = new MySqlCommand($"UPDATE {TableName} SET deleted = true WHERE id = @Id, deleted = false",
-                        dbConnection))
-                    {
-                        command.Parameters.AddWithValue("@Id", id);
-                        command.ExecuteNonQuery();
-                    }
+                    command.Parameters.AddWithValue("@Id", id);
+                    command.ExecuteNonQuery();
                 }
             }
         }

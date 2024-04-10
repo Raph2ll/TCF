@@ -1,7 +1,7 @@
 using System;
 using client.Models;
 
-namespace client.Data.Repositories.Interfaces
+namespace client.Db.Repositories.Interfaces
 {
     public interface IClientRepository
     {

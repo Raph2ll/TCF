@@ -4,12 +4,6 @@ using client.Db.Repositories;
 using client.Services.Interfaces;
 using client.Services;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
 using Serilog;
 

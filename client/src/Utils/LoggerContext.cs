@@ -1,51 +1,51 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Serilog;
-
 
 namespace client.Utils
 {
     public class LoggerContext : IDisposable
     {
-        private readonly string? _name;
-        private readonly Stopwatch _sw = new Stopwatch();
+        private readonly string _name;
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly Serilog.ILogger _logger;
 
-        private readonly Serilog.ILogger? _logger = null;
-        public LoggerContext(string name, Serilog.ILogger looger)
+        public LoggerContext(string name, Serilog.ILogger logger)
         {
-            _sw.Start();
+            _name = name;
+            _logger = logger;
+            _stopwatch.Start();
+
             try
             {
-                _name = name;
-                _logger = looger;
                 _logger?.Information($"Starting {_name}");
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                _logger?.Error(ex, $"Error starting {_name}");
             }
-
-        }
-        private void OnError(string message)
-        {
-            _sw.Stop();
-            _logger?.Error(message);
         }
 
         public void Dispose()
         {
-            _sw.Stop();
-            _logger?.Information($"{_name} took {(_sw.Elapsed.TotalMilliseconds):0.###}ms");
+            _stopwatch.Stop();
+
+            try
+            {
+                _logger?.Information($"{_name} took {_stopwatch.Elapsed.TotalMilliseconds:0.###}ms");
+            }
+            catch (Exception ex)
+            {
+                _logger?.Error(ex, $"Error logging {_name} duration");
+            }
         }
     }
+
     public class ContextFactory
     {
-        private readonly Serilog.ILogger? _logger;
+        private readonly Serilog.ILogger _logger;
 
-        public ContextFactory(Serilog.ILogger? logger)
+        public ContextFactory(Serilog.ILogger logger)
         {
             _logger = logger;
         }

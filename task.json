@@ -8,7 +8,7 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/client_tests/client_tests.csproj",
+                "${workspaceFolder}/client_tests/client_tests.Tests.csproj",
                 "/p:CollectCoverage=true",
                 "/p:CoverletOutputFormat=lcov",
                 "/p:CoverletOutput=./lcov.info"

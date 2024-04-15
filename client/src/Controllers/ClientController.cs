@@ -33,15 +33,15 @@ namespace api.Controllers
         /// <response code="400">Malformed request</response>
         /// <response code="500">Internal server error</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ClientCreateDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Client), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult CreateClient(ClientCreateDTO client)
         {
             try
             {
-                _clientService.CreateClient(client);
-                return StatusCode(201, client);
+                var res = _clientService.CreateClient(client);
+                return StatusCode(201, res);
             }
             catch (ValidationException ex)
             {

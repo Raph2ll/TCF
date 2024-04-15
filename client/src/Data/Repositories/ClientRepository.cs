@@ -34,7 +34,6 @@ namespace client.Db.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-
                 using (var cmd = new MySqlCommand(@$"INSERT INTO client.{TableName} (id, name, surname, email, birthdate) 
                     VALUES (@Id, @Name, @Surname, @Email, @BirthDate)",
                     _dbContext.Connection))

@@ -26,7 +26,7 @@ namespace client.Services
             _ctxFactory = new ContextFactory(_logger);
         }
 
-        public void CreateClient(ClientCreateDTO createClientDto)
+        public Client CreateClient(ClientCreateDTO createClientDto)
         {
             var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
@@ -40,8 +40,10 @@ namespace client.Services
                     Email = createClientDto.Email,
                     BirthDate = createClientDto.BirthDate
                 };
-
-                _clientRepository.CreateClient(client);
+               _clientRepository.CreateClient(client);
+               
+               Client res = GetClientById(client.Id);
+               return res;
             }
         }
 

@@ -1,6 +1,6 @@
-using product.Data;
-using product.Data.Repositories.Interfaces;
-using product.Data.Repositories;
+using product.Db;
+using product.Db.Repositories.Interfaces;
+using product.Db.Repositories;
 using product.Services.Interfaces;
 using product.Services;
 using Microsoft.OpenApi.Models;
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
+using Serilog;
 
 namespace product
 {
@@ -24,10 +25,9 @@ namespace product
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            builder.Services.AddSingleton<DataContext>(_ =>
+            builder.Services.AddSingleton<DbContext>(_ =>
             {
-                var connection = new DataContext(connectionString);
-                return connection;
+                return new DbContext(connectionString, "product", Log.Logger);
             });
 
             builder.Services.AddSingleton<IProductRepository, ProductRepository>();

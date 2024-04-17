@@ -1,27 +1,39 @@
 using product.Models;
-using product.Data.Repositories.Interfaces;
+using Serilog;
+using System;
+using System.Diagnostics;
+using System.Reflection;
+using product.Db.Repositories.Interfaces;
 using MySql.Data.MySqlClient;
+using product.Utils;
 
-namespace product.Data.Repositories
+namespace product.Db.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly DataContext _connection;
+        private readonly DbContext _dbContext;
+
         private string _tableName = "products";
-        
-        public ProductRepository(DataContext connection)
+        private readonly Serilog.ILogger _logger;
+        private readonly ContextFactory _ctxFactory;
+        private readonly string _namespace = "Repository";
+
+        public ProductRepository(DbContext connection)
         {
-            _connection = connection;
+            _dbContext = connection;
+            _logger = Serilog.Log.ForContext<ProductRepository>();
+            _ctxFactory = new ContextFactory(_logger);
         }
 
         public void CreateProduct(Product product)
         {
-            using (var dbConnection = _connection.GetConnection())
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
+
+            using (var ctx = _ctxFactory.Create(methodName))
             {
-                dbConnection.Open();
                 using (var cmd = new MySqlCommand(@$"INSERT INTO {_tableName} (id, name, dest, quantity, price) 
                         VALUES (@Id, @Name, @Dest, @Quantity, @Price)",
-                           dbConnection))
+                           _dbContext.Connection))
                 {
                     cmd.Parameters.AddWithValue("@Id", product.Id);
                     cmd.Parameters.AddWithValue("@Name", product.Name);
@@ -37,12 +49,12 @@ namespace product.Data.Repositories
         public List<Product> GetProducts()
         {
             var products = new List<Product>();
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
-            using (var dbConnection = _connection.GetConnection())
+            using (var ctx = _ctxFactory.Create(methodName))
             {
-                dbConnection.Open();
                 using (var command = new MySqlCommand($@"SELECT id, name, dest, quantity, price, created_at, updated_at, deleted FROM {_tableName}",
-                           dbConnection))
+                           _dbContext.Connection))
                 {
                     using (var reader = command.ExecuteReader())
                     {
@@ -64,18 +76,19 @@ namespace product.Data.Repositories
                         }
                     }
                 }
-            }
 
-            return products;
+                return products;
+            }
         }
 
         public Product GetProductById(string id)
         {
-            using (var dbConnection = _connection.GetConnection())
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
+
+            using (var ctx = _ctxFactory.Create(methodName))
             {
-                dbConnection.Open();
                 using (var command = new MySqlCommand($"SELECT id, name, dest, quantity, price, created_at, updated_at, deleted FROM {_tableName} WHERE id = @Id",
-                           dbConnection))
+                           _dbContext.Connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
 
@@ -97,18 +110,19 @@ namespace product.Data.Repositories
                         }
                     }
                 }
-            }
 
-            return null;
+                return null;
+            }
         }
 
         public void UpdateProduct(Product updatedProduct)
         {
-            using (var dbConnection = _connection.GetConnection())
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
+
+            using (var ctx = _ctxFactory.Create(methodName))
             {
-                dbConnection.Open();
                 using (var cmd = new MySqlCommand($"UPDATE {_tableName} SET name = @Name, dest = @Dest, quantity = @Quantity, price = @Price WHERE id = @Id AND deleted = false",
-                    dbConnection))
+                    _dbContext.Connection))
                 {
                     cmd.Parameters.AddWithValue("@Id", updatedProduct.Id);
                     cmd.Parameters.AddWithValue("@Name", updatedProduct.Name);
@@ -123,11 +137,12 @@ namespace product.Data.Repositories
 
         public void DeleteProduct(string id)
         {
-            using (var dbConnection = _connection.GetConnection())
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
+
+            using (var ctx = _ctxFactory.Create(methodName))
             {
-                dbConnection.Open();
                 using (var command = new MySqlCommand($"UPDATE {_tableName} SET deleted = true WHERE id = @Id AND deleted = false",
-                    dbConnection))
+                    _dbContext.Connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
                     command.ExecuteNonQuery();

@@ -6,11 +6,13 @@ using System.Linq;
 using product.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using product.Exceptions;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace product.Controllers
 {
     [ApiController]
-    [Route("api/Product")]
+    [Route("api/product")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -20,8 +22,19 @@ namespace product.Controllers
             _productService = ProductService;
         }
 
+        /// <summary>
+        /// Create a product.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="Product">Product's data</param>
+        /// <returns></returns>
+        /// <response code="201">Success in creating the product</response>
+        /// <response code="400">Malformed request</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Product), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult CreateProduct(ProductCreateDTO Product)
         {
@@ -30,6 +43,10 @@ namespace product.Controllers
                 _productService.CreateProduct(Product);
                 return StatusCode(201, Product);
             }
+            catch (ValidationException ex)
+            {
+                return StatusCode(400, ex);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
@@ -37,6 +54,14 @@ namespace product.Controllers
 
         }
 
+        /// <summary>
+        /// Get a products.
+        /// </summary>
+        /// <remarks>
+        /// </remarks> 
+        /// <returns></returns>
+        /// <response code="201">Success in creating the product</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -53,6 +78,16 @@ namespace product.Controllers
             }
         }
 
+        /// <summary>
+        /// Edit product by id.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">Product id</param>
+        /// <returns></returns>
+        /// <response code="200">Return new product</response>
+        /// <response code="404">Product not found</response>
+        /// <response code="500">Internal server error</response>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,6 +110,16 @@ namespace product.Controllers
             }
         }
 
+        /// <summary>
+        /// Soft delete product by id.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">Product id</param>
+        /// <returns></returns>
+        /// <response code="200">The product has been deleted</response>
+        /// <response code="404">Product not found</response>
+        /// <response code="500">Internal server error</response>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

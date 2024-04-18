@@ -6,6 +6,12 @@ using System.Reflection;
 using product.Db.Repositories.Interfaces;
 using MySql.Data.MySqlClient;
 using product.Utils;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
 
 namespace product.Db.Repositories
 {
@@ -24,14 +30,13 @@ namespace product.Db.Repositories
             _logger = Serilog.Log.ForContext<ProductRepository>();
             _ctxFactory = new ContextFactory(_logger);
         }
-
         public void CreateProduct(Product product)
         {
             var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var cmd = new MySqlCommand(@$"INSERT INTO {_tableName} (id, name, dest, quantity, price) 
+                using (var cmd = new MySqlCommand(@$"INSERT INTO product.{_tableName} (id, name, dest, quantity, price) 
                         VALUES (@Id, @Name, @Dest, @Quantity, @Price)",
                            _dbContext.Connection))
                 {
@@ -53,7 +58,7 @@ namespace product.Db.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var command = new MySqlCommand($@"SELECT id, name, dest, quantity, price, created_at, updated_at, deleted FROM {_tableName}",
+                using (var command = new MySqlCommand($@"SELECT id, name, dest, quantity, price, created_at, updated_at, deleted FROM product.{_tableName}",
                            _dbContext.Connection))
                 {
                     using (var reader = command.ExecuteReader())
@@ -87,7 +92,7 @@ namespace product.Db.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var command = new MySqlCommand($"SELECT id, name, dest, quantity, price, created_at, updated_at, deleted FROM {_tableName} WHERE id = @Id",
+                using (var command = new MySqlCommand($"SELECT id, name, dest, quantity, price, created_at, updated_at, deleted FROM product.{_tableName} WHERE id = @Id",
                            _dbContext.Connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
@@ -121,7 +126,7 @@ namespace product.Db.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var cmd = new MySqlCommand($"UPDATE {_tableName} SET name = @Name, dest = @Dest, quantity = @Quantity, price = @Price WHERE id = @Id AND deleted = false",
+                using (var cmd = new MySqlCommand($"UPDATE product.{_tableName} SET name = @Name, dest = @Dest, quantity = @Quantity, price = @Price WHERE id = @Id AND deleted = false",
                     _dbContext.Connection))
                 {
                     cmd.Parameters.AddWithValue("@Id", updatedProduct.Id);
@@ -141,7 +146,7 @@ namespace product.Db.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var command = new MySqlCommand($"UPDATE {_tableName} SET deleted = true WHERE id = @Id AND deleted = false",
+                using (var command = new MySqlCommand($"UPDATE product.{_tableName} SET deleted = true WHERE id = @Id AND deleted = false",
                     _dbContext.Connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);

@@ -6,7 +6,7 @@ namespace product.Services.Interfaces;
 
 public interface IProductService
 {
-    public void CreateProduct(ProductCreateDTO newProduct);
+    public Product CreateProduct(ProductCreateDTO newProduct);
     public List<Product> GetProducts();
     public Product GetProductById(string id);
     public void UpdateProduct(string id, ProductUpdateDTO updatedProductDto);

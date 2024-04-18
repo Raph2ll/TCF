@@ -26,7 +26,7 @@ namespace product.Services
             _ctxFactory = new ContextFactory(_logger);
         }
 
-        public void CreateProduct(ProductCreateDTO newProduct)
+        public Product CreateProduct(ProductCreateDTO newProduct)
         {
             var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
@@ -42,8 +42,10 @@ namespace product.Services
                 };
 
                 _productRepository.CreateProduct(product);
-            }
 
+                Product res = GetProductById(product.Id);
+                return res;
+            }
         }
 
         public List<Product> GetProducts()

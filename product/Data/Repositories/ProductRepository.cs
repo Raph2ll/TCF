@@ -58,7 +58,9 @@ namespace product.Db.Repositories
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                using (var command = new MySqlCommand($@"SELECT id, name, dest, quantity, price, created_at, updated_at, deleted FROM product.{_tableName}",
+                using (var command = new MySqlCommand($@"
+                SELECT id, name, dest, quantity, price, created_at, updated_at, deleted 
+                FROM product.{_tableName} ORDER BY price DESC, name DESC, dest DESC, quantity DESC, created_at",
                            _dbContext.Connection))
                 {
                     using (var reader = command.ExecuteReader())

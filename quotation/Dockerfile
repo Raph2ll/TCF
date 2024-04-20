@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+USER $APP_UID
+WORKDIR /app
+EXPOSE 6060
+EXPOSE 6061
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["quotation.csproj", "quotation/"]
+RUN dotnet restore "quotation/quotation.csproj"
+WORKDIR "/src/quotation/"
+COPY . .
+RUN dotnet build "quotation.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "quotation.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "quotation.dll"]

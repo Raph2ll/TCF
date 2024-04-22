@@ -5,7 +5,7 @@ using quotation.src.Services.Refit;
 using Refit;
 using quotation.src.Services.Interfaces;
 using quotation.src.Services;
-
+using StackExchange.Redis;
 
 namespace quotation
 {
@@ -21,6 +21,10 @@ namespace quotation
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
             string awesomeApiUrl = configuration["External:AwesomeApi"];
+
+            var redis = ConnectionMultiplexer.Connect(connectionString);
+
+            builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
 
             builder.Services.AddSingleton<IQuotationService, QuotationService>();
 

@@ -10,6 +10,13 @@ services:
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
 
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   client:
     build: ./client  
     ports: 
@@ -23,3 +30,14 @@ services:
       - "7070:7070"
     depends_on: 
       - db
+
+  quotation:
+    build: ./quotation 
+    ports: 
+      - "6060:6060"
+    depends_on: 
+      - db
+      - redis
+
+volumes:
+  redis_data:

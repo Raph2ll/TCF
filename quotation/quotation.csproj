@@ -11,6 +11,7 @@
   <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
       <PackageReference Include="MySql.Data" Version="8.3.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="Refit" Version="7.0.0" />
       <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
       <PackageReference Include="Serilog" Version="4.0.0-dev-02122" />

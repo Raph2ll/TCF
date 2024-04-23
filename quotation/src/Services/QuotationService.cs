@@ -35,7 +35,6 @@ namespace quotation.src.Services
                     var currencyInfo = await _economyApi.GetCurrencyInfo();
                     var quotation = new Quotation();
 
-
                     foreach (var pair in currencyInfo)
                     {
                         switch (pair.Key)
@@ -69,6 +68,24 @@ namespace quotation.src.Services
                 {
                     throw new Exception($"Error getting currency information: {ex.Message}");
                 }
+            }
+        }
+
+        public async Task<decimal> GetCurrencyByName(string currencyName)
+        {
+            var quotation = await GetCurrencyInfo();
+            switch (currencyName.ToUpper())
+            {
+                case "EUR":
+                    return quotation.EUR;
+                case "USD":
+                    return quotation.USD;
+                case "GBP":
+                    return quotation.GBP;
+                case "CNY":
+                    return quotation.CNY;
+                default:
+                    throw new ArgumentException("Invalid currency name");
             }
         }
     }

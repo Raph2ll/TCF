@@ -35,5 +35,18 @@ namespace quotation.src.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetByName(string id)
+        {
+            try
+            {
+                var res = await _quotationService.GetCurrencyByName(id);
+                return StatusCode(201, res);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
-}
+} 

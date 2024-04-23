@@ -9,5 +9,6 @@ namespace quotation.src.Services.Interfaces
     public interface IQuotationService
     {
         Task<Quotation> GetCurrencyInfo();
+        Task<decimal> GetCurrencyByName(string currencyName);
     }
 }

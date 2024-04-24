@@ -20,8 +20,17 @@ namespace quotation.src.Controllers
             _quotationService = quotationService;
         }
 
-
+        /// <summary>
+        /// Get All.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Return all quotation</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
+        [ProducesResponseType(typeof(Quotation), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<Quotation>> GetAll()
         {
             try
@@ -35,7 +44,18 @@ namespace quotation.src.Controllers
             }
         }
 
+        /// <summary>
+        /// Get quotation by name.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">Quotation by name</param>
+        /// <returns></returns>
+        /// <response code="200">Return a single quotation</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Decimal), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> GetByName(string id)
         {
             try

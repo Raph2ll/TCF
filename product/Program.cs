@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using Serilog;
+using product.Services.Refit;
+using Refit;
+
 
 namespace product
 {
@@ -24,6 +27,8 @@ namespace product
             .Build();
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
+            string quotationApi = configuration["External:QuotationApi"];
+
 
             builder.Services.AddSingleton<DbContext>(_ =>
             {
@@ -54,6 +59,8 @@ namespace product
             });
 
             builder.Services.AddControllers();
+            builder.Services.AddRefitClient<IQuotation>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(quotationApi));
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()

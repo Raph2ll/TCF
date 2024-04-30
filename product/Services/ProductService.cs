@@ -7,20 +7,24 @@ using Serilog;
 using System.Diagnostics;
 using System.Reflection;
 using product.Utils;
-
+using product.Services.Refit;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace product.Services
 {
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IQuotation _quotation;
         private readonly Serilog.ILogger _logger;
         private readonly ContextFactory _ctxFactory;
         private readonly string _namespace = "Service";
 
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IQuotation quotation, IProductRepository productRepository)
         {
+            _quotation = quotation;
             _productRepository = productRepository;
             _logger = Serilog.Log.ForContext<ProductService>();
             _ctxFactory = new ContextFactory(_logger);
@@ -48,15 +52,44 @@ namespace product.Services
             }
         }
 
-        public List<Product> GetProducts()
-        {
-            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
+public async Task<List<ProductResponseDTO>> GetProducts()
+{
+    var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
-            using (var ctx = _ctxFactory.Create(methodName))
+    using (var ctx = _ctxFactory.Create(methodName))
+    {
+        var products = new List<Product>();
+        products = _productRepository.GetProducts();
+
+        var currencyInfo = await _quotation.GetCurrencyInfo();
+        JsonConvert.SerializeObject(currencyInfo);
+
+        var newProducts = new List<ProductResponseDTO>();
+
+        foreach (var product in products)
+        {
+            var newProduct = new ProductResponseDTO
             {
-                return _productRepository.GetProducts();
-            }
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Quantity = product.Quantity,
+                BRL = product.Price,
+                EUR = Convert.ToDecimal(product.Price / currencyInfo.EUR, CultureInfo.InvariantCulture),
+                USD = Convert.ToDecimal(product.Price / currencyInfo.USD, CultureInfo.InvariantCulture),
+                GBP = Convert.ToDecimal(product.Price / currencyInfo.GBP, CultureInfo.InvariantCulture),
+                CNY = Convert.ToDecimal(product.Price / currencyInfo.CNY, CultureInfo.InvariantCulture),
+                CreatedAt = product.CreatedAt,
+                UpdatedAt = product.UpdatedAt,   
+                Deleted = product.Deleted
+            };
+
+            newProducts.Add(newProduct);
         }
+        return newProducts;
+    }
+}
+
         public Product GetProductById(string id)
         {
             var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";

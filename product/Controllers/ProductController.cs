@@ -65,12 +65,12 @@ namespace product.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<List<Product>> GetProducts()
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetProducts()
         {
             try
             {
-                var Products = _productService.GetProducts();
-                return Ok(Products);
+                var products = await _productService.GetProducts();
+                return Ok(products);
             }
             catch (Exception ex)
             {

@@ -6,7 +6,11 @@ using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using Serilog;
 using Refit;
-
+using MongoDB.Driver;
+using sales.src.Repositories;
+using sales.src.Repositories.Interfaces;
+using sales.src.Services;
+using sales.src.Services.Interfaces;
 
 namespace sales
 {
@@ -22,12 +26,16 @@ namespace sales
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            /* string quotationApi = configuration["External:QuotationApi"];
+            // string quotationApi = configuration["External:QuotationApi"];
 
+            var mongoClient = new MongoClient(connectionString);
 
-            builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
-            builder.Services.AddSingleton<IProductRepository, ProductRepository>();
-            builder.Services.AddSingleton<IProductService, ProductService>();
+            // Registro do IMongoDatabase
+            var mongoDatabase = mongoClient.GetDatabase("sales_db");
+            builder.Services.AddSingleton<IMongoDatabase>(mongoDatabase);
+
+            builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+            builder.Services.AddScoped<ISaleService, SaleService>();
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -50,9 +58,10 @@ namespace sales
             });
 
             builder.Services.AddControllers();
+            /*
             builder.Services.AddRefitClient<IQuotation>()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(quotationApi));
-
+            
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .WriteTo.Console(outputTemplate:
@@ -66,6 +75,7 @@ namespace sales
             });
 
             builder.Host.UseSerilog();
+            */
             
             var app = builder.Build();
 
@@ -77,13 +87,13 @@ namespace sales
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "product");
                 });
             }
-            app.UseSerilogRequestLogging();
+
+            // app.UseSerilogRequestLogging();
             app.UseRouting();
 
             app.MapControllers();
-            var port = "7070";
+            var port = "5050";
             app.Run($"http://0.0.0.0:{port}");
-            */
         }
     }
 }

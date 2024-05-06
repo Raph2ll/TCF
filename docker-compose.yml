@@ -52,5 +52,15 @@ services:
       - db
       - redis
 
+  sales:
+      build: ./sales
+      ports:
+        - "5050:5050"
+      depends_on:
+        - mongodb
+        - client
+        - product
+        - quotation
+
 volumes:
   redis_data:

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using sales.src.Models;
+using sales.src.Models.DTOs;
 using sales.src.Services.Interfaces;
 using System;
 using System.Collections.Generic;

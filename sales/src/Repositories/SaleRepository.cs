@@ -20,10 +20,7 @@ namespace sales.src.Repositories
         }
 
         public async Task CreateSale(Sale sale)
-        {
-            sale.CreatedAt = DateTime.UtcNow;
-            sale.UpdatedAt = DateTime.UtcNow;
-            
+        { 
             foreach (var item in sale.Items)
             {
                 await _saleItemsCollection.InsertOneAsync(item);

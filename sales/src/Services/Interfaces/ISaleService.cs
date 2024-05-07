@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using sales.src.Models;
+using sales.src.Models.DTOs;
 
 namespace sales.src.Services.Interfaces
 {

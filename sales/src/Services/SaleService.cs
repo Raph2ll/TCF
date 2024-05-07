@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using sales.src.Models;
+using sales.src.Models.DTOs;
 using sales.src.Repositories.Interfaces;
 using sales.src.Services.Interfaces;
 
@@ -18,15 +19,11 @@ namespace sales.src.Services
 
         public async Task CreateSale(Sale sale)
         {
+            
             sale.CreatedAt = DateTime.UtcNow;
             sale.UpdatedAt = DateTime.UtcNow;
 
-            foreach (var item in sale.Items)
-            {
-                await _saleItemsCollection.InsertOneAsync(item);
-            }
-
-            await _salesCollection.InsertOneAsync(sale);
+            await _saleRepository.CreateSale(sale);
         }
 
 

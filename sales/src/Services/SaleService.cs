@@ -20,8 +20,15 @@ namespace sales.src.Services
         {
             sale.CreatedAt = DateTime.UtcNow;
             sale.UpdatedAt = DateTime.UtcNow;
-            await _saleRepository.CreateSale(sale);
+
+            foreach (var item in sale.Items)
+            {
+                await _saleItemsCollection.InsertOneAsync(item);
+            }
+
+            await _salesCollection.InsertOneAsync(sale);
         }
+
 
         public async Task<Sale> GetSaleById(string id)
         {

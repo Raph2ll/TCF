@@ -23,6 +23,12 @@ namespace sales.src.Repositories
         {
             sale.CreatedAt = DateTime.UtcNow;
             sale.UpdatedAt = DateTime.UtcNow;
+            
+            foreach (var item in sale.Items)
+            {
+                await _saleItemsCollection.InsertOneAsync(item);
+            }
+
             await _salesCollection.InsertOneAsync(sale);
         }
 
@@ -51,4 +57,3 @@ namespace sales.src.Repositories
         }
     }
 }
- 

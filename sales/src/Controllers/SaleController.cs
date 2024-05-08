@@ -20,7 +20,7 @@ namespace sales.src.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSale(Sale sale)
+        public async Task<IActionResult> CreateSale(SaleRequestDTO sale)
         {
             try
             {

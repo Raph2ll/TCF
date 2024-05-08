@@ -17,11 +17,32 @@ namespace sales.src.Services
             _saleRepository = saleRepository;
         }
 
-        public async Task CreateSale(Sale sale)
+        public async Task CreateSale(SaleRequestDTO saleRequest)
         {
-            
-            sale.CreatedAt = DateTime.UtcNow;
-            sale.UpdatedAt = DateTime.UtcNow;
+            var sale = new Sale
+            {
+                ClientId = saleRequest.ClientId,
+                Items = new List<SaleItem>(),
+                Status = saleRequest.Status,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            List<SaleItem> saleItems = new List<SaleItem>();
+
+            foreach (var itemRequest in saleRequest.Items)
+            {
+                var saleItem = new SaleItem
+                {
+                    ProductId = itemRequest.ProductId,
+                    Quantity = itemRequest.Quantity,
+                    SellId = sale.Id
+                };
+
+                saleItems.Add(saleItem);
+            }
+
+            sale.Items = saleItems;
 
             await _saleRepository.CreateSale(sale);
         }

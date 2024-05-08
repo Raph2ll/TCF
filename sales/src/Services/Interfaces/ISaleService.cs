@@ -8,7 +8,7 @@ namespace sales.src.Services.Interfaces
 {
     public interface ISaleService
     {
-        Task CreateSale(Sale sale);
+        Task CreateSale(SaleRequestDTO sale);
         Task<Sale> GetSaleById(string id);
         Task<List<Sale>> GetAllSales();
         Task UpdateSale(string id, Sale updatedSale);

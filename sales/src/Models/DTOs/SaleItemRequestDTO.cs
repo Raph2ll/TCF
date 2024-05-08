@@ -7,8 +7,6 @@ namespace sales.src.Models.DTOs
 {
     public class SaleItemRequestDTO
     {
-        public string? SellId { get; set; }
-
         public string? ProductId { get; set; }
 
         public int Quantity { get; set; }

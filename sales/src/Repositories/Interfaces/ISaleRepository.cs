@@ -8,7 +8,7 @@ namespace sales.src.Repositories.Interfaces
 {
     public interface ISaleRepository
     {
-        public Task CreateSale(Sale sale);
+        public Task CreateSale(Sale sale, List<SaleItem> items);
         public  Task<Sale> GetSaleById(string id);
         public  Task<List<Sale>> GetAllSales();
         public Task UpdateSale(string id, Sale updatedSale);

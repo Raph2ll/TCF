@@ -35,16 +35,13 @@ namespace sales.src.Services
                 var saleItem = new SaleItem
                 {
                     ProductId = itemRequest.ProductId,
-                    Quantity = itemRequest.Quantity,
-                    SellId = sale.Id
+                    Quantity = itemRequest.Quantity
                 };
 
                 saleItems.Add(saleItem);
             }
 
-            sale.Items = saleItems;
-
-            await _saleRepository.CreateSale(sale);
+            await _saleRepository.CreateSale(sale, saleItems);
         }
 
 

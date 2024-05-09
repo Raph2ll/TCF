@@ -19,14 +19,20 @@ namespace sales.src.Repositories
             _saleItemsCollection = database.GetCollection<SaleItem>("sale_items");
         }
 
-        public async Task CreateSale(Sale sale)
-        { 
-            foreach (var item in sale.Items)
+        public async Task CreateSale(Sale sale, List<SaleItem> items)
+        {
+            await _salesCollection.InsertOneAsync(sale);
+
+            foreach (var item in items)
             {
+                item.SellId = sale.Id; 
                 await _saleItemsCollection.InsertOneAsync(item);
             }
 
-            await _salesCollection.InsertOneAsync(sale);
+            var updateResult = await _salesCollection.UpdateOneAsync(
+                Builders<Sale>.Filter.Eq(s => s.Id, sale.Id),
+                Builders<Sale>.Update.Set("Items", items)
+            );
         }
 
         public async Task<Sale> GetSaleById(string id)

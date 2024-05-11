@@ -79,6 +79,32 @@ namespace api.Controllers
         }
 
         /// <summary>
+        /// Get client by id.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="201">Success in get the client</response>
+        /// <response code="404">Client not found</response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<List<Client>> GetClientById(string id)
+        {
+            try
+            {
+                var client = _clientService.GetClientById(id);
+                return Ok(client);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        
+        /// <summary>
         /// Edit client by id.
         /// </summary>
         /// <remarks>

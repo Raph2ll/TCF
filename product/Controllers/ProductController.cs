@@ -79,6 +79,38 @@ namespace product.Controllers
         }
 
         /// <summary>
+        /// Get product by id.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">Product id</param>
+        /// <returns></returns>
+        /// <response code="200">Return product</response>
+        /// <response code="404">Product not found</response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult UpdateProduct(string id)
+        {
+            try
+            {
+                _productService.GetProductById(id);
+
+                return Ok(updatedProduct);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound($"Product not found: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Edit product by id.
         /// </summary>
         /// <remarks>

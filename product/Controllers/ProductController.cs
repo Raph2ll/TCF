@@ -60,7 +60,7 @@ namespace product.Controllers
         /// <remarks>
         /// </remarks> 
         /// <returns></returns>
-        /// <response code="201">Success in creating the product</response>
+        /// <response code="201">Success in getting the products</response>
         /// <response code="500">Internal server error</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -96,9 +96,9 @@ namespace product.Controllers
         {
             try
             {
-                _productService.GetProductById(id);
+                var product = _productService.GetProductById(id);
 
-                return Ok(updatedProduct);
+                return Ok(product);
             }
             catch (NotFoundException ex)
             {

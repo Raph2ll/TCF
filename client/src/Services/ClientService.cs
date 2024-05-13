@@ -63,7 +63,7 @@ namespace client.Services
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                var existingClient = GetClientById(id);
+                var existingClient = _clientRepository.GetClientById(id);
                 
                 if (existingClient == null)
                 {
@@ -80,11 +80,6 @@ namespace client.Services
             using (var ctx = _ctxFactory.Create(methodName))
             {
                 var existingClient = GetClientById(id);
-
-                if (existingClient == null)
-                {
-                    throw new NotFoundException("Client Not Found");
-                }
 
                 string updatedName = existingClient.Name;
                 if (updatedClientDto.Name != "")

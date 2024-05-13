@@ -52,43 +52,43 @@ namespace product.Services
             }
         }
 
-public async Task<List<ProductResponseDTO>> GetProducts()
-{
-    var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
-
-    using (var ctx = _ctxFactory.Create(methodName))
-    {
-        var products = new List<Product>();
-        products = _productRepository.GetProducts();
-
-        var currencyInfo = await _quotation.GetCurrencyInfo();
-        JsonConvert.SerializeObject(currencyInfo);
-
-        var newProducts = new List<ProductResponseDTO>();
-
-        foreach (var product in products)
+        public async Task<List<ProductResponseDTO>> GetProducts()
         {
-            var newProduct = new ProductResponseDTO
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Quantity = product.Quantity,
-                BRL = product.Price,
-                EUR = Convert.ToDecimal(product.Price / currencyInfo.EUR, CultureInfo.InvariantCulture),
-                USD = Convert.ToDecimal(product.Price / currencyInfo.USD, CultureInfo.InvariantCulture),
-                GBP = Convert.ToDecimal(product.Price / currencyInfo.GBP, CultureInfo.InvariantCulture),
-                CNY = Convert.ToDecimal(product.Price / currencyInfo.CNY, CultureInfo.InvariantCulture),
-                CreatedAt = product.CreatedAt,
-                UpdatedAt = product.UpdatedAt,   
-                Deleted = product.Deleted
-            };
+            var methodName = $"{_namespace} {MethodBase.GetCurrentMethod()!.Name}";
 
-            newProducts.Add(newProduct);
+            using (var ctx = _ctxFactory.Create(methodName))
+            {
+                var products = new List<Product>();
+                products = _productRepository.GetProducts();
+
+                var currencyInfo = await _quotation.GetCurrencyInfo();
+                JsonConvert.SerializeObject(currencyInfo);
+
+                var newProducts = new List<ProductResponseDTO>();
+
+                foreach (var product in products)
+                {
+                    var newProduct = new ProductResponseDTO
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Description = product.Description,
+                        Quantity = product.Quantity,
+                        BRL = product.Price,
+                        EUR = Convert.ToDecimal(product.Price / currencyInfo.EUR, CultureInfo.InvariantCulture),
+                        USD = Convert.ToDecimal(product.Price / currencyInfo.USD, CultureInfo.InvariantCulture),
+                        GBP = Convert.ToDecimal(product.Price / currencyInfo.GBP, CultureInfo.InvariantCulture),
+                        CNY = Convert.ToDecimal(product.Price / currencyInfo.CNY, CultureInfo.InvariantCulture),
+                        CreatedAt = product.CreatedAt,
+                        UpdatedAt = product.UpdatedAt,
+                        Deleted = product.Deleted
+                    };
+
+                    newProducts.Add(newProduct);
+                }
+                return newProducts;
+            }
         }
-        return newProducts;
-    }
-}
 
         public Product GetProductById(string id)
         {

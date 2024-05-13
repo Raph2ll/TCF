@@ -40,10 +40,10 @@ namespace client.Services
                     Email = createClientDto.Email,
                     BirthDate = createClientDto.BirthDate
                 };
-               _clientRepository.CreateClient(client);
-               
-               Client res = GetClientById(client.Id);
-               return res;
+                _clientRepository.CreateClient(client);
+
+                Client res = GetClientById(client.Id);
+                return res;
             }
         }
 
@@ -63,7 +63,13 @@ namespace client.Services
 
             using (var ctx = _ctxFactory.Create(methodName))
             {
-                return _clientRepository.GetClientById(id);
+                var existingClient = GetClientById(id);
+                
+                if (existingClient == null)
+                {
+                    throw new NotFoundException("Client Not Found");
+                }
+                return existingClient;
             }
         }
 

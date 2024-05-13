@@ -98,6 +98,10 @@ namespace api.Controllers
                 var client = _clientService.GetClientById(id);
                 return Ok(client);
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound($"{ex.Message}");
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");

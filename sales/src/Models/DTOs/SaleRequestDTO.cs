@@ -11,6 +11,5 @@ namespace sales.src.Models.DTOs
 
         public List<SaleItemRequestDTO>? Items { get; set; }
 
-        public SaleStatus Status { get; set; }
     }
 }

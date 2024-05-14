@@ -5,6 +5,7 @@ using sales.src.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using sales.src.Exceptions;
 
 namespace sales.src.Controllers
 {
@@ -36,7 +37,28 @@ namespace sales.src.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+        
+        [HttpPost("{id}/items")]
+        public async Task<IActionResult> AddItemsToSale(string id, List<SaleItemRequestDTO> saleItems)
+        {
+            try
+            {
+                await _saleService.AddItemsToSale(id, saleItems);
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSaleById(string id)
         {

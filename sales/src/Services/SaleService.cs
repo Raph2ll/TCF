@@ -14,11 +14,13 @@ namespace sales.src.Services
     {
         private readonly ISaleRepository _saleRepository;
         private readonly IClient _clientApi;
+        private readonly IProduct _productApi;
 
-        public SaleService(ISaleRepository saleRepository, IClient clientApi)
+        public SaleService(ISaleRepository saleRepository, IClient clientApi, IProduct productApi)
         {
             _saleRepository = saleRepository;
             _clientApi = clientApi;
+            _productApi = productApi;
         }
 
         public async Task CreateSale(SaleRequestDTO saleRequest)
@@ -51,20 +53,33 @@ namespace sales.src.Services
             
             List<SaleItem> saleItems = new List<SaleItem>();
 
-            foreach (var itemRequest in saleRequest.Items)
+            int index = 0;
+            foreach (var itemRequest in saleRequest)
             {
+                var productResponse = await _productApi.GetProductById(itemRequest.ProductId);
+
+                if (productResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException($"Item[{index}] with ProductId '{itemRequest.ProductId}' not found.");
+                }
+
+                var product = productResponse.Content;
+                if (product.Quantity < itemRequest.Quantity)
+                {
+                    throw new BadRequestException($"Product '{product.Name}' does not have enough quantity available.");
+                }
+
                 var saleItem = new SaleItem
                 {
                     ProductId = itemRequest.ProductId,
                     Quantity = itemRequest.Quantity
                 };
+
                 saleItems.Add(saleItem);
+                index++;
             }
-
-            await _saleRepository.CreateSale(sale, saleItems);
+            await _saleRepository.AddItemsToSale(id, saleItems);
         }
-
-
         public async Task<Sale> GetSaleById(string id)
         {
             return await _saleRepository.GetSaleById(id);

@@ -24,15 +24,20 @@ namespace sales.src.Repositories
             await _salesCollection.InsertOneAsync(sale);
         }
 
+        public async Task AddItemsToSale(string id, List<SaleItem> items)
+        {
             foreach (var item in items)
             {
-                item.SellId = sale.Id; 
+                item.SellId = id;
                 await _saleItemsCollection.InsertOneAsync(item);
             }
 
             var updateResult = await _salesCollection.UpdateOneAsync(
-                Builders<Sale>.Filter.Eq(s => s.Id, sale.Id),
-                Builders<Sale>.Update.Set("Items", items)
+                Builders<Sale>.Filter.Eq(s => s.Id, id),
+                Builders<Sale>.Update.Combine(
+                    Builders<Sale>.Update.Set("Items", items),
+                    Builders<Sale>.Update.Set("Status", 1)
+                )
             );
         }
 

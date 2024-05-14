@@ -27,6 +27,10 @@ namespace sales.src.Controllers
                 await _saleService.CreateSale(sale);
                 return Ok();
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound($"{ex.Message}");
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");

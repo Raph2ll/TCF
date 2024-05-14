@@ -14,7 +14,7 @@ namespace sales.src.Models
 
         public List<SaleItem>? Items { get; set; }
 
-        public int Status { get; set; }
+        public SaleStatus Status { get; set; }
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime CreatedAt { get; set; }

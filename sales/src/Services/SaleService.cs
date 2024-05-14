@@ -23,22 +23,32 @@ namespace sales.src.Services
 
         public async Task CreateSale(SaleRequestDTO saleRequest)
         {
-            var response = await _clientApi.GetClientById(saleRequest.ClientId);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            var clientResponse = await _clientApi.GetClientById(saleRequest.ClientId);
+            if (clientResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                throw new NotFoundException($"Client with ID '{saleRequest.ClientId}' not found.");
+                throw new NotFoundException($"Client with Id '{saleRequest.ClientId}' not found.");
             }
-            
+
             var sale = new Sale
             {
                 ClientId = saleRequest.ClientId,
                 Items = new List<SaleItem>(),
-                Status = saleRequest.Status,
+                Status = 0,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
+            await _saleRepository.CreateSale(sale);
+        }
+
+        public async Task AddItemsToSale(string id, List<SaleItemRequestDTO> saleRequest)
+        {
+            var sale = await _saleRepository.GetSaleById(id);
+            if (sale == null)
+            {
+                throw new NotFoundException($"Sale with Id '{id}' not found.");
+            }
+            
             List<SaleItem> saleItems = new List<SaleItem>();
 
             foreach (var itemRequest in saleRequest.Items)

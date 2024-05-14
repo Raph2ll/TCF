@@ -19,9 +19,10 @@ namespace sales.src.Repositories
             _saleItemsCollection = database.GetCollection<SaleItem>("sale_items");
         }
 
-        public async Task CreateSale(Sale sale, List<SaleItem> items)
+        public async Task CreateSale(Sale sale)
         {
             await _salesCollection.InsertOneAsync(sale);
+        }
 
             foreach (var item in items)
             {

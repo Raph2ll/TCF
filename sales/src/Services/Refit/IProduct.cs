@@ -8,7 +8,7 @@ namespace sales.src.Services.Refit
 {
     public interface IProduct
     {
-        [Get("api/product/{id}")]
+        [Get("/api/product/{id}")]
         Task<ApiResponse<Product>> GetProductById([AliasAs("id")] string id);
     }
 

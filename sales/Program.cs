@@ -11,6 +11,7 @@ using sales.src.Repositories;
 using sales.src.Repositories.Interfaces;
 using sales.src.Services;
 using sales.src.Services.Interfaces;
+using sales.src.Services.Refit;
 
 namespace sales
 {
@@ -26,11 +27,8 @@ namespace sales
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            // string quotationApi = configuration["External:QuotationApi"];
-
             var mongoClient = new MongoClient(connectionString);
 
-            // Registro do IMongoDatabase
             var mongoDatabase = mongoClient.GetDatabase("sales_db");
             builder.Services.AddSingleton<IMongoDatabase>(mongoDatabase);
 
@@ -58,10 +56,13 @@ namespace sales
             });
 
             builder.Services.AddControllers();
-            /*
-            builder.Services.AddRefitClient<IQuotation>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri(quotationApi));
             
+            builder.Services.AddRefitClient<IClient>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://client:8080"));
+
+            builder.Services.AddRefitClient<IProduct>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://product:7070"));
+
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .WriteTo.Console(outputTemplate:
@@ -75,7 +76,6 @@ namespace sales
             });
 
             builder.Host.UseSerilog();
-            */
             
             var app = builder.Build();
 

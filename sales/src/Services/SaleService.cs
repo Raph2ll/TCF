@@ -50,12 +50,18 @@ namespace sales.src.Services
             {
                 throw new NotFoundException($"Sale with Id '{id}' not found.");
             }
-            
+
+            var existingProductIds = new HashSet<string>(sale.Items.Select(i => i.ProductId));
             List<SaleItem> saleItems = new List<SaleItem>();
 
             int index = 0;
             foreach (var itemRequest in saleRequest)
             {
+                if (!existingProductIds.Add(itemRequest.ProductId))
+                {
+                    throw new BadRequestException($"Item with ProductId '{itemRequest.ProductId}' is duplicated in the request or already exists in the sale.");
+                }
+
                 var productResponse = await _productApi.GetProductById(itemRequest.ProductId);
 
                 if (productResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -80,6 +86,7 @@ namespace sales.src.Services
             }
             await _saleRepository.AddItemsToSale(id, saleItems);
         }
+
         public async Task<Sale> GetSaleById(string id)
         {
             return await _saleRepository.GetSaleById(id);

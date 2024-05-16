@@ -38,7 +38,7 @@ namespace sales.src.Controllers
             }
         }
         
-        [HttpPost("{id}/items")]
+        [HttpPost("items/{id}")]
         public async Task<IActionResult> AddItemsToSale(string id, List<SaleItemRequestDTO> saleItems)
         {
             try

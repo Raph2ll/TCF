@@ -31,6 +31,12 @@ namespace sales.src.Services
                 throw new NotFoundException($"Client with Id '{saleRequest.ClientId}' not found.");
             }
 
+            var existingSale = await GetSaleById(saleRequest.ClientId);
+            if (existingSale != null)
+            {
+                throw new BadRequestException($"There is already a sale for client with Id '{saleRequest.ClientId}'.");
+            }
+
             var sale = new Sale
             {
                 ClientId = saleRequest.ClientId,
@@ -46,10 +52,7 @@ namespace sales.src.Services
         public async Task AddItemsToSale(string id, List<SaleItemRequestDTO> saleRequest)
         {
             var sale = await _saleRepository.GetSaleById(id);
-            if (sale == null)
-            {
-                throw new NotFoundException($"Sale with Id '{id}' not found.");
-            }
+
 
             var existingProductIds = new HashSet<string>(sale.Items.Select(i => i.ProductId));
             List<SaleItem> saleItems = new List<SaleItem>();
@@ -89,7 +92,13 @@ namespace sales.src.Services
 
         public async Task<Sale> GetSaleById(string id)
         {
-            return await _saleRepository.GetSaleById(id);
+            var sale = await _saleRepository.GetSaleById(id);
+            if (sale == null)
+            {
+                throw new NotFoundException($"Sale with Id '{id}' not found.");
+            }
+
+            return sale;
         }
 
         public async Task<List<Sale>> GetAllSales()

@@ -38,7 +38,7 @@ namespace sales.src.Controllers
             }
         }
         
-        [HttpPost("items/{id}")]
+        [HttpPost("item/{id}")]
         public async Task<IActionResult> AddItemsToSale(string id, List<SaleItemRequestDTO> saleItems)
         {
             try
@@ -59,6 +59,7 @@ namespace sales.src.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSaleById(string id)
         {

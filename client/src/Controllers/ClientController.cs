@@ -12,7 +12,7 @@ using System.ComponentModel.DataAnnotations;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("api/client")]
+    [Route("api")]
     public class ClientController : ControllerBase
     {
         private readonly IClientService _clientService;

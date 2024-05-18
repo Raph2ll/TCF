@@ -12,7 +12,7 @@ using System.ComponentModel.DataAnnotations;
 namespace product.Controllers
 {
     [ApiController]
-    [Route("api/product")]
+    [Route("api")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;

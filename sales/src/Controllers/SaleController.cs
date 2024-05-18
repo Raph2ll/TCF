@@ -10,7 +10,7 @@ using sales.src.Exceptions;
 namespace sales.src.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api")]
     public class SaleController : ControllerBase
     {
         private readonly ISaleService _saleService;

@@ -82,8 +82,7 @@ namespace client
 
             app.MapControllers();
 
-            var port = "8080";
-            app.Run($"http://0.0.0.0:{port}");
+            app.Run($"http://0.0.0.0:8080");
         }
     }
 }

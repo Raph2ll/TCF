@@ -33,34 +33,49 @@ services:
   client:
     build: ./client  
     ports: 
-      - "8080:8080"
+      - "8084:8080"
     depends_on: 
       - db
 
   product:
     build: ./product  
     ports: 
-      - "7070:7070"
+      - "8083:8080"
     depends_on: 
       - db
 
   quotation:
     build: ./quotation 
     ports: 
-      - "6060:6060"
+      - "8082:8080"
     depends_on: 
       - db
       - redis
 
   sales:
-      build: ./sales
-      ports:
-        - "5050:5050"
-      depends_on:
-        - mongodb
-        - client
-        - product
-        - quotation
+    build: ./sales
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mongodb
+      - client
+      - product
+      - quotation
+
+  proxy:
+    image: nginx
+    volumes:
+      - type: bind
+        source: ./scripts/proxy/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+    ports:
+      - 8080:80
+    depends_on:
+      - client
+      - product
+      - quotation
+      - sales
 
 volumes:
   redis_data:

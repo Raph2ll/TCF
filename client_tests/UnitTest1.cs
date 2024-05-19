@@ -1,4 +1,4 @@
-namespace client_test;
+namespace client.Tests;
 
 public class UnitTest1
 {

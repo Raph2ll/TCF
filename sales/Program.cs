@@ -56,7 +56,7 @@ namespace sales
             });
 
             builder.Services.AddControllers();
-            
+
             builder.Services.AddRefitClient<IClient>()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://client:8080"));
 
@@ -76,7 +76,7 @@ namespace sales
             });
 
             builder.Host.UseSerilog();
-            
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -84,7 +84,7 @@ namespace sales
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "product");
+                    c.SwaggerEndpoint("v1/swagger.json", "sales");
                 });
             }
 

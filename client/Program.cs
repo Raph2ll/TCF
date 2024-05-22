@@ -17,8 +17,8 @@ namespace client
             var builder = WebApplication.CreateBuilder(args);
 
             var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -70,10 +70,11 @@ namespace client
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseDeveloperExceptionPage();
+
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "client");
+                    c.SwaggerEndpoint("v1/swagger.json", "client");
                 });
             }
 

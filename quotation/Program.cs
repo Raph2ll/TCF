@@ -74,7 +74,7 @@ namespace quotation
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "client");
+                    c.SwaggerEndpoint("v1/swagger.json", "quotation");
                 });
             }
 

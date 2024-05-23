@@ -36,7 +36,7 @@ namespace client
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "client",
+                    Title = "Client",
                     Version = "v1",
                     Contact = new OpenApiContact
                     {
@@ -44,6 +44,11 @@ namespace client
                         Email = "raph2ll@gmail.com",
                         Url = new Uri("https://github.com/Raph2ll")
                     }
+                                    c.AddServer(new OpenApiServer
+                {
+                    Url = "/client",
+                    Description = "Base path for client, because of nginx reverse proxy"
+                });
                 });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -70,8 +75,7 @@ namespace client
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-
+                app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("v1/swagger.json", "client");

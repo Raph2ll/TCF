@@ -23,8 +23,8 @@ namespace product
             var builder = WebApplication.CreateBuilder(args);
 
             var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
             string quotationApi = configuration["External:QuotationApi"];
@@ -44,7 +44,7 @@ namespace product
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "product",
+                    Title = "Product",
                     Version = "v1",
                     Contact = new OpenApiContact
                     {
@@ -53,6 +53,13 @@ namespace product
                         Url = new Uri("https://github.com/Raph2ll")
                     }
                 });
+
+                c.AddServer(new OpenApiServer
+                {
+                    Url = "/product",
+                    Description = "Base path for product, because of nginx reverse proxy"
+                });
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
@@ -75,7 +82,7 @@ namespace product
             });
 
             builder.Host.UseSerilog();
-            
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -86,6 +93,7 @@ namespace product
                     c.SwaggerEndpoint("v1/swagger.json", "product");
                 });
             }
+
             app.UseSerilogRequestLogging();
             app.UseRouting();
 

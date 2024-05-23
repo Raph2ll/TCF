@@ -41,7 +41,7 @@ namespace sales
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "product",
+                    Title = "Sales",
                     Version = "v1",
                     Contact = new OpenApiContact
                     {
@@ -50,6 +50,13 @@ namespace sales
                         Url = new Uri("https://github.com/Raph2ll")
                     }
                 });
+
+                c.AddServer(new OpenApiServer
+                {
+                    Url = "/sales",
+                    Description = "Base path for sales, because of nginx reverse proxy"
+                });
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);

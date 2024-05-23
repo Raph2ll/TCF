@@ -16,8 +16,8 @@ namespace quotation
             var builder = WebApplication.CreateBuilder(args);
 
             var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
-            .Build();
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             string connectionString = configuration.GetConnectionString("DefaultConnection");
             string awesomeApiUrl = configuration["External:AwesomeApi"];
@@ -34,7 +34,7 @@ namespace quotation
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "client",
+                    Title = "Quotation",
                     Version = "v1",
                     Contact = new OpenApiContact
                     {
@@ -43,6 +43,13 @@ namespace quotation
                         Url = new Uri("https://github.com/Raph2ll")
                     }
                 });
+
+                c.AddServer(new OpenApiServer
+                {
+                    Url = "/quotation",
+                    Description = "Base path for quotation, because of nginx reverse proxy"
+                });
+
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);

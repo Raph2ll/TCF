@@ -44,12 +44,14 @@ namespace client
                         Email = "raph2ll@gmail.com",
                         Url = new Uri("https://github.com/Raph2ll")
                     }
-                                    c.AddServer(new OpenApiServer
+                });
+
+                c.AddServer(new OpenApiServer
                 {
                     Url = "/client",
                     Description = "Base path for client, because of nginx reverse proxy"
                 });
-                });
+                
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);

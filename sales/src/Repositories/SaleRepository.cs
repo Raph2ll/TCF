@@ -47,6 +47,13 @@ namespace sales.src.Repositories
             return await _salesCollection.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<Sale> GetSaleByClientId(string clientId)
+        {
+            var filter = Builders<Sale>.Filter.Eq(s => s.ClientId, clientId);
+            var sale = await _salesCollection.Find(filter).FirstOrDefaultAsync();
+            return sale;
+        }
+
         public async Task<List<Sale>> GetAllSales()
         {
             return await _salesCollection.Find(_ => true).ToListAsync();

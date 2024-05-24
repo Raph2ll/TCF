@@ -22,12 +22,12 @@ namespace sales.src.Controllers
         }
 
         [HttpPost("{id}")]
-        public async Task<IActionResult> CreateSale(ObjectId id)
+        public async Task<IActionResult> CreateSale(string id)
         {
             try
             {
                 await _saleService.CreateSale(id);
-                return Ok();
+                return StatusCode(201, $"Ok a sale for the client: {id} was created");
             }
             catch (NotFoundException ex)
             {

@@ -9,7 +9,7 @@ namespace sales.src.Services.Interfaces
 {
     public interface ISaleService
     {
-        Task CreateSale(ObjectId id);
+        Task CreateSale(string id);
         public Task AddItemsToSale(string id, List<SaleItemRequestDTO> saleRequest);
         Task<Sale> GetSaleById(string id);
         Task<List<Sale>> GetAllSales();

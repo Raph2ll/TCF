@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MongoDB.Bson;
 using sales.src.Models;
 
 namespace sales.src.Repositories.Interfaces
@@ -10,8 +8,9 @@ namespace sales.src.Repositories.Interfaces
     {
         public Task CreateSale(Sale sale);
         public Task AddItemsToSale(string id, List<SaleItem> items);
-        public  Task<Sale> GetSaleById(string id);
-        public  Task<List<Sale>> GetAllSales();
+        public Task<Sale> GetSaleById(string id);
+        public Task<Sale> GetSaleByClientId(string clientId);
+        public Task<List<Sale>> GetAllSales();
         public Task UpdateSale(string id, Sale updatedSale);
         public Task DeleteSale(string id);
     }

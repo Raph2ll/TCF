@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using sales.src.Exceptions;
+using MongoDB.Bson;
 
 namespace sales.src.Controllers
 {
@@ -20,12 +21,12 @@ namespace sales.src.Controllers
             _saleService = saleService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateSale(SaleRequestDTO sale)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> CreateSale(ObjectId id)
         {
             try
             {
-                await _saleService.CreateSale(sale);
+                await _saleService.CreateSale(id);
                 return Ok();
             }
             catch (NotFoundException ex)

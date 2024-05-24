@@ -7,7 +7,7 @@ namespace sales.src.Services.Refit
 {
     public interface IClient
     {
-        [Get("/api/client/{id}")]
+        [Get("/api/{id}")]
         Task<ApiResponse<Client>> GetClientById([AliasAs("id")] string id);
     }
 

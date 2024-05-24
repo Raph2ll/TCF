@@ -23,23 +23,23 @@ namespace sales.src.Services
             _productApi = productApi;
         }
 
-        public async Task CreateSale(SaleRequestDTO saleRequest)
+        public async Task CreateSale(string id)
         {
-            var clientResponse = await _clientApi.GetClientById(saleRequest.ClientId);
+            var clientResponse = await _clientApi.GetClientById(id);
             if (clientResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                throw new NotFoundException($"Client with Id '{saleRequest.ClientId}' not found.");
+                throw new NotFoundException($"Client with Id '{id}' not found.");
             }
 
-            var existingSale = await GetSaleById(saleRequest.ClientId);
+            var existingSale = await _saleRepository.GetSaleByClientId(id);
             if (existingSale != null)
             {
-                throw new BadRequestException($"There is already a sale for client with Id '{saleRequest.ClientId}'.");
+                throw new BadRequestException($"There is already a sale with ClientId '{id}'.");
             }
 
             var sale = new Sale
             {
-                ClientId = saleRequest.ClientId,
+                ClientId = id,
                 Items = new List<SaleItem>(),
                 Status = 0,
                 CreatedAt = DateTime.UtcNow,

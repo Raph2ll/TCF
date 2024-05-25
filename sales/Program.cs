@@ -68,7 +68,7 @@ namespace sales
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://client:8080"));
 
             builder.Services.AddRefitClient<IProduct>()
-                .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://product:7070"));
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://product:8080"));
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()

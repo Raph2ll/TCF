@@ -7,6 +7,7 @@ using sales.src.Repositories.Interfaces;
 using sales.src.Services.Interfaces;
 using sales.src.Services.Refit;
 using sales.src.Exceptions;
+using MongoDB.Bson;
 
 namespace sales.src.Services
 {
@@ -51,8 +52,7 @@ namespace sales.src.Services
 
         public async Task AddItemsToSale(string id, List<SaleItemRequestDTO> saleRequest)
         {
-            var sale = await _saleRepository.GetSaleById(id);
-
+            var sale = await GetSaleById(id);
 
             var existingProductIds = new HashSet<string>(sale.Items.Select(i => i.ProductId));
             List<SaleItem> saleItems = new List<SaleItem>();
@@ -78,6 +78,10 @@ namespace sales.src.Services
                     throw new BadRequestException($"Product '{product.Name}' does not have enough quantity available.");
                 }
 
+                var quantityDecrease =  product.Quantity - itemRequest.Quantity ;
+
+                await UpdateProductQuantity(itemRequest.ProductId, quantityDecrease);
+
                 var saleItem = new SaleItem
                 {
                     ProductId = itemRequest.ProductId,
@@ -89,7 +93,6 @@ namespace sales.src.Services
             }
             await _saleRepository.AddItemsToSale(id, saleItems);
         }
-
         public async Task<Sale> GetSaleById(string id)
         {
             var sale = await _saleRepository.GetSaleById(id);
@@ -110,6 +113,21 @@ namespace sales.src.Services
         {
             updatedSale.UpdatedAt = DateTime.UtcNow;
             await _saleRepository.UpdateSale(id, updatedSale);
+        }
+
+        public async Task<Product> UpdateProductQuantity(string id, int newQuantity)
+        {
+            var request = new ProductUpdateRequest { Quantity = newQuantity };
+            var response = await _productApi.UpdateProduct(id, request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return response.Content;
+            }
+            else
+            {
+                throw new BadRequestException($"Failed to update product quantity.");
+            }
         }
 
         public async Task DeleteSale(string id)

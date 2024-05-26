@@ -43,8 +43,14 @@ namespace sales.src.Repositories
 
         public async Task<Sale> GetSaleById(string id)
         {
-            var filter = Builders<Sale>.Filter.Eq("_id", ObjectId.Parse(id));
-            return await _salesCollection.Find(filter).FirstOrDefaultAsync();
+            if (!ObjectId.TryParse(id, out ObjectId objectId))
+            {
+                throw new ArgumentException("Invalid ID format", nameof(id));
+            }
+
+            var filter = Builders<Sale>.Filter.Eq(s => s.Id, objectId.ToString());
+            var sale = await _salesCollection.Find(filter).FirstOrDefaultAsync();
+            return sale;
         }
 
         public async Task<Sale> GetSaleByClientId(string clientId)

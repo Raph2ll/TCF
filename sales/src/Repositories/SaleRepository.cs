@@ -35,7 +35,7 @@ namespace sales.src.Repositories
             var updateResult = await _salesCollection.UpdateOneAsync(
                 Builders<Sale>.Filter.Eq(s => s.Id, id),
                 Builders<Sale>.Update.Combine(
-                    Builders<Sale>.Update.Set("Items", items),
+                    Builders<Sale>.Update.PushEach(s => s.Items, items),
                     Builders<Sale>.Update.Set("Status", 1)
                 )
             );

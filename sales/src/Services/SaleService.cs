@@ -78,7 +78,7 @@ namespace sales.src.Services
                     throw new BadRequestException($"Product '{product.Name}' does not have enough quantity available.");
                 }
 
-                var quantityDecrease =  product.Quantity - itemRequest.Quantity ;
+                var quantityDecrease = product.Quantity - itemRequest.Quantity;
 
                 await UpdateProductQuantity(itemRequest.ProductId, quantityDecrease);
 
@@ -132,6 +132,23 @@ namespace sales.src.Services
 
         public async Task DeleteSale(string id)
         {
+            var sale = await GetSaleById(id);
+
+            int index = 0;
+            foreach (var item in sale.Items)
+            {
+                var productResponse = await _productApi.GetProductById(item.ProductId);
+                if (productResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException($"Item[{index}] with ProductId '{item.ProductId}' not found.");
+                }
+
+                var product = productResponse.Content;
+
+                var updatedQuantity = product.Quantity + item.Quantity;
+                await UpdateProductQuantity(item.ProductId, updatedQuantity);
+            }
+
             await _saleRepository.DeleteSale(id);
         }
     }

@@ -131,6 +131,41 @@ namespace sales.src.Services
             }
         }
 
+        public async Task ConfirmSale(string saleId)
+        {
+            var sale = await GetSaleById(saleId);
+            if (sale.Status == SaleStatus.STARTED)
+            {
+                throw new BadRequestException("This sale don't have any item");   
+            }
+            if (sale.Status == SaleStatus.DONE)
+            {
+                throw new BadRequestException("This sale is already confirmed.");
+            }
+
+            foreach (var item in sale.Items)
+            {
+                var productResponse = await _productApi.GetProductById(item.ProductId);
+                var product = productResponse.Content;
+
+                if (product.Quantity < item.Quantity)
+                {
+                    throw new BadRequestException($"Product '{product.Name}':{product.Id} does not have enough quantity available.");
+                }
+
+                var quantityDecrease = product.Quantity - item.Quantity;
+
+                var updateRequest = new ProductUpdateRequest
+                {
+                    Quantity = quantityDecrease
+                };
+
+                await _productApi.UpdateProduct(item.ProductId, updateRequest);
+            }
+
+            await _saleRepository.ConfirmSale(saleId);
+        }
+
         public async Task DeleteSale(string id)
         {
             var sale = await GetSaleById(id);

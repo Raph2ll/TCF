@@ -106,6 +106,28 @@ namespace sales.src.Controllers
             }
         }
 
+        [HttpPut("confirm/{id}")]
+        public async Task<IActionResult> ConfirmSale(string id)
+        {
+            try
+            {
+                await _saleService.ConfirmSale(id);
+                return Ok($"Sale with ID '{id}' confirmed successfully.");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}" );
+            }
+        }
+    
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSale(string id)
         {

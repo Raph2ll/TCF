@@ -75,7 +75,7 @@ namespace sales.src.Services
                 var product = productResponse.Content;
                 if (product.Quantity < itemRequest.Quantity)
                 {
-                    throw new BadRequestException($"Product '{product.Name}' does not have enough quantity available.");
+                    throw new BadRequestException($"Product '{product.Name}':{product.Id} does not have enough quantity available.");
                 }
 
                 var quantityDecrease = product.Quantity - itemRequest.Quantity;
@@ -93,6 +93,7 @@ namespace sales.src.Services
             }
             await _saleRepository.AddItemsToSale(id, saleItems);
         }
+
         public async Task<Sale> GetSaleById(string id)
         {
             var sale = await _saleRepository.GetSaleById(id);

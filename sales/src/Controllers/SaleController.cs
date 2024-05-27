@@ -39,13 +39,13 @@ namespace sales.src.Controllers
             }
         }
         
-        [HttpPost("item/{id}")]
+        [HttpPost("items/{id}")]
         public async Task<IActionResult> AddItemsToSale(string id, List<SaleItemRequestDTO> saleItems)
         {
             try
             {
                 await _saleService.AddItemsToSale(id, saleItems);
-                return StatusCode(StatusCodes.Status200OK);
+                return StatusCode(200, $"Ok, these items have been added for sale");
             }
             catch (NotFoundException ex)
             {

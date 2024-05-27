@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using sales.src.Models;
 using sales.src.Models.DTOs;
+using sales.src.Services.Refit;
 
 namespace sales.src.Services.Interfaces
 {
@@ -14,6 +15,7 @@ namespace sales.src.Services.Interfaces
         Task<Sale> GetSaleById(string id);
         Task<List<Sale>> GetAllSales();
         Task UpdateSale(string id, Sale updatedSale);
+        public Task<Product> UpdateProductQuantity(string id, int newQuantity);
         Task DeleteSale(string id);
     }
 }

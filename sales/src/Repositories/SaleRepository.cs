@@ -74,8 +74,11 @@ namespace sales.src.Repositories
 
         public async Task DeleteSale(string id)
         {
-            var filter = Builders<Sale>.Filter.Eq("_id", ObjectId.Parse(id));
-            await _salesCollection.DeleteOneAsync(filter);
+            await _salesCollection.UpdateOneAsync(
+                Builders<Sale>.Filter.Eq("_id", ObjectId.Parse(id)),
+                Builders<Sale>.Update
+                        .Set("Status", 3)
+                );
         }
     }
 }

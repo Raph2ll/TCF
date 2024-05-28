@@ -82,7 +82,7 @@ namespace sales.src.Repositories
                     Builders<Sale>.Filter.Eq(s => s.Id, saleId),
                     Builders<Sale>.Update
                         .PullFilter(s => s.Items, Builders<SaleItem>.Filter.In(i => i.Id, itemIds))
-                        .Set("Status", 3)
+                        .Set("Status", 2)
                         .Set(s => s.UpdatedAt, DateTime.UtcNow));
         }
 

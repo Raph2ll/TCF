@@ -38,7 +38,7 @@ namespace sales.src.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
+
         [HttpPost("items/{id}")]
         public async Task<IActionResult> AddItemsToSale(string id, List<SaleItemRequestDTO> saleItems)
         {
@@ -57,10 +57,10 @@ namespace sales.src.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSaleById(string id)
         {
@@ -124,10 +124,32 @@ namespace sales.src.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}" );
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-    
+
+        [HttpPut("remove-items/{saleId}")]
+        public async Task<IActionResult> RemoveItemsFromSale(string saleId, [FromBody] List<string> itemIds)
+        {
+            try
+            {
+                await _saleService.RemoveItemsFromSale(saleId, itemIds);
+                return Ok("Items removed successfully.");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSale(string id)
         {

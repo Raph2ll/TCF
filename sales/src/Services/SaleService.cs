@@ -96,7 +96,7 @@ namespace sales.src.Services
             {
                 throw new ArgumentException("Invalid ID format", nameof(id));
             }
-            
+
             var sale = await _saleRepository.GetSaleById(objectId.ToString());
             if (sale == null)
             {
@@ -137,7 +137,7 @@ namespace sales.src.Services
             var sale = await GetSaleById(saleId);
             if (sale.Status == SaleStatus.STARTED)
             {
-                throw new BadRequestException("This sale don't have any item");   
+                throw new BadRequestException("This sale don't have any item.");
             }
             if (sale.Status == SaleStatus.DONE)
             {
@@ -165,6 +165,37 @@ namespace sales.src.Services
             }
 
             await _saleRepository.ConfirmSale(saleId);
+        }
+
+        public async Task RemoveItemsFromSale(string saleId, List<string> itemIds)
+        {
+            var sale = await GetSaleById(saleId);
+            if (sale.Status == SaleStatus.STARTED)
+            {
+                throw new BadRequestException("This sale don't have any item.");
+            }
+
+            foreach (var itemId in itemIds)
+            {
+                if (!sale.Items.Any(item => item.Id == itemId))
+                {
+                    throw new NotFoundException($"Item with Id '{itemId}' not found in sale with Id '{saleId}'.");
+                }
+                if (sale.Status == SaleStatus.DONE)
+                {
+                    var productResponse = await _productApi.GetProductById(itemId);
+                    var product = productResponse.Content;
+
+                    var item = sale.Items.FirstOrDefault(i => i.Id == itemId);
+                    var quantityIncrease = product.Quantity + item.Quantity;
+
+                    var updateRequest = new ProductUpdateRequest { Quantity = quantityIncrease };
+
+                    await _productApi.UpdateProduct(item.ProductId, updateRequest);
+                }
+            }
+
+            await _saleRepository.RemoveItemsFromSale(saleId, itemIds);
         }
 
         public async Task DeleteSale(string id)

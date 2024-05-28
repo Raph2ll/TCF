@@ -17,6 +17,7 @@ namespace sales.src.Services.Interfaces
         Task UpdateSale(string id, Sale updatedSale);
         public Task<Product> UpdateProductQuantity(string id, int newQuantity);
         public Task ConfirmSale(string saleId);
+        public Task RemoveItemsFromSale(string saleId, List<string> itemIds);
         Task DeleteSale(string id);
     }
 }

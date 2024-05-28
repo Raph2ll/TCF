@@ -76,6 +76,16 @@ namespace sales.src.Repositories
                      .Set(s => s.UpdatedAt, DateTime.UtcNow));
         }
 
+        public async Task RemoveItemsFromSale(string saleId, List<string> itemIds)
+        {
+            await _salesCollection.UpdateOneAsync(
+                    Builders<Sale>.Filter.Eq(s => s.Id, saleId),
+                    Builders<Sale>.Update
+                        .PullFilter(s => s.Items, Builders<SaleItem>.Filter.In(i => i.Id, itemIds))
+                        .Set("Status", 3)
+                        .Set(s => s.UpdatedAt, DateTime.UtcNow));
+        }
+
         public async Task DeleteSale(string id)
         {
             await _salesCollection.UpdateOneAsync(

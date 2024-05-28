@@ -78,10 +78,6 @@ namespace sales.src.Services
                     throw new BadRequestException($"Product '{product.Name}':{product.Id} does not have enough quantity available.");
                 }
 
-                var quantityDecrease = product.Quantity - itemRequest.Quantity;
-
-                await UpdateProductQuantity(itemRequest.ProductId, quantityDecrease);
-
                 var saleItem = new SaleItem
                 {
                     ProductId = itemRequest.ProductId,
@@ -96,7 +92,12 @@ namespace sales.src.Services
 
         public async Task<Sale> GetSaleById(string id)
         {
-            var sale = await _saleRepository.GetSaleById(id);
+            if (!ObjectId.TryParse(id, out ObjectId objectId))
+            {
+                throw new ArgumentException("Invalid ID format", nameof(id));
+            }
+            
+            var sale = await _saleRepository.GetSaleById(objectId.ToString());
             if (sale == null)
             {
                 throw new NotFoundException($"Sale with Id '{id}' not found.");

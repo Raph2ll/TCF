@@ -62,9 +62,10 @@ namespace sales.src.Repositories
 
         public async Task UpdateSale(string id, Sale updatedSale)
         {
-            await _salesCollection.ReplaceOneAsync(
-                Builders<Sale>.Filter.Eq("_id", ObjectId.Parse(id)), 
-                updatedSale.UpdatedAt = DateTime.UtcNow);
+            await _salesCollection.UpdateOneAsync(
+                Builders<Sale>.Filter.Eq(s => s.Id, id),
+                Builders<Sale>.Update
+                    .Set(s => s.UpdatedAt, DateTime.UtcNow));
         }
 
         public async Task ConfirmSale(string saleId)

@@ -167,6 +167,49 @@ namespace sales.src.Services
             await _saleRepository.ConfirmSale(saleId);
         }
 
+        public async Task UpdateItemsFromSale(string saleId, List<SaleItemRequestDTO> itemUpdates)
+        {
+            var sale = await GetSaleById(saleId);
+            if (sale.Status == SaleStatus.STARTED)
+            {
+                throw new BadRequestException("This sale doesn't have any item.");
+            }
+
+            foreach (var itemUpdate in itemUpdates)
+            {
+                var saleItem = sale.Items.FirstOrDefault(item => item.Id == itemUpdate.ProductId);
+                if (saleItem == null)
+                {
+                    throw new NotFoundException($"Item with Id '{itemUpdate.ProductId}' not found in sale with Id '{saleId}'.");
+                }
+
+                // Se a venda está concluída, atualiza a quantidade no estoque
+                if (sale.Status == SaleStatus.DONE)
+                {
+                    var productResponse = await _productApi.GetProductById(saleItem.ProductId);
+                    var product = productResponse.Content;
+
+                    // Calcula a diferença na quantidade e atualiza o estoque
+                    int quantityDifference = itemUpdate.Quantity - saleItem.Quantity;
+                    product.Quantity += quantityDifference;
+
+                    var updateRequest = new ProductUpdateRequest { Quantity = product.Quantity };
+                    var updateResponse = await _productApi.UpdateProduct(saleItem.ProductId, updateRequest);
+
+                    if (!updateResponse.IsSuccessStatusCode)
+                    {
+                        throw new Exception($"Failed to update quantity for product '{product.Name}':{product.Id}.");
+                    }
+                }
+
+                // Atualiza a quantidade do item na venda
+                saleItem.Quantity = itemUpdate.Quantity;
+            }
+
+            // Atualiza a venda no repositório
+            await _saleRepository.UpdateSaleItems(saleId, sale.Items);
+        }
+
         public async Task RemoveItemsFromSale(string saleId, List<string> itemIds)
         {
             var sale = await GetSaleById(saleId);

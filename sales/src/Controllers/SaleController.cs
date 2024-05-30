@@ -128,6 +128,34 @@ namespace sales.src.Controllers
             }
         }
 
+        [HttpPut("{saleId}/items")]
+        public async Task<IActionResult> UpdateSaleItems(string saleId, [FromBody] List<SaleItemRequestDTO> itemUpdates)
+        {
+            try
+            {
+                var saleItemUpdateRequests = itemUpdates.Select(dto => new SaleItemRequestDTO
+                {
+                    ProductId = dto.ProductId,
+                    Quantity = dto.Quantity
+                }).ToList();
+
+                await _saleService.UpdateItemsFromSale(saleId, saleItemUpdateRequests);
+                return Ok("Sale items updated successfully.");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("remove-items/{saleId}")]
         public async Task<IActionResult> RemoveItemsFromSale(string saleId, [FromBody] List<string> itemIds)
         {
